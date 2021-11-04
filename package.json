@@ -1,7 +1,7 @@
 {
-  "name": "my-webpack-project",
+  "name": "rubikscube",
   "version": "1.0.0",
-  "description": "My webpack project",
+  "description": "online Rubik's cube for beginners",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,30 +9,48 @@
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "serve": "webpack serve",
+    "dev": "webpack server --mode=development --hot --progress"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chenyxuan/rubikscube.git"
   },
-  "keywords": [],
+  "keywords": [
+    "Rubik's Cube",
+    "3D Visualization",
+    "Human-computer Interaction"
+  ],
   "author": "Yuxuan Chen",
-  "license": "The Unlicense",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/chenyxuan/rubikscube/issues"
   },
   "homepage": "https://github.com/chenyxuan/rubikscube#readme",
   "devDependencies": {
+    "@types/three": "^0.133.1",
+    "@types/webpack-env": "^1.16.3",
     "@webpack-cli/generators": "^2.4.1",
     "clean-webpack-plugin": "^4.0.0",
+    "clipboard": "^2.0.8",
     "css-loader": "^6.5.0",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "material-design-icons": "^3.0.1",
     "mini-css-extract-plugin": "^2.4.3",
     "prettier": "^2.4.1",
     "source-map-loader": "^3.0.0",
     "style-loader": "^3.3.1",
+    "text-loader": "^0.0.1",
+    "three": "^0.134.0",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",
+    "vue": "^2.6.14",
+    "vue-class-component": "^7.2.6",
+    "vue-property-decorator": "^9.1.2",
+    "vue-style-loader": "^4.1.3",
+    "vue-template-compiler": "^2.6.14",
+    "vuetify": "^2.5.6",
     "webpack": "^5.61.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^3.11.2"
