@@ -74,5 +74,8 @@ export default class Interactor {
         document.addEventListener("mousedown", this.mouse);
         document.addEventListener("mousemove", this.mouse);
         document.addEventListener("mouseup", this.mouse);
+
+        
+        document.addEventListener("touchmove", function(e) { e.preventDefault(); }, { passive:false });
     }
 }

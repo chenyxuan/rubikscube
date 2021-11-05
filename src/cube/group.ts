@@ -4,7 +4,7 @@ import { TwistAction, Tween, tweener } from "./twister";
 import Cube from "./cube";
 
 export default class CubeGroup extends THREE.Group {
-    public static frames = 20;
+    public static frames = 30;
     public static readonly AXIS_VECTOR: { [key: string]: THREE.Vector3 } = {
         a: new THREE.Vector3(1, 1, 1),
         x: new THREE.Vector3(-1, 0, 0),
