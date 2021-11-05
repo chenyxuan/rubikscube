@@ -9,9 +9,9 @@ import { cubelet_defs } from "./utils";
 
 
 export class Holder {
-  public vector: THREE.Vector3;
-  public index: number;
-  public plane: THREE.Plane;
+  vector: THREE.Vector3;
+  index: number;
+  plane: THREE.Plane;
   constructor() {
     this.vector = new THREE.Vector3();
   }
@@ -321,7 +321,6 @@ export default class Controller {
           let times = Math.round(angle / (Math.PI / 2));
           const reverse = times < 0;
           times = Math.abs(times);
-          this.world.cube.record(new TwistAction(this.group.name, reverse, times));
         }
       } else {
         const groups = this.world.cube.table.groups[this.axis[0]];
@@ -332,7 +331,6 @@ export default class Controller {
           let times = Math.round(angle / (Math.PI / 2));
           const reverse = times < 0;
           times = Math.abs(times);
-          this.world.cube.record(new TwistAction(this.axis, reverse, times));
         }
       }
     }
@@ -343,7 +341,7 @@ export default class Controller {
   }
 
   tick: number = new Date().getTime();
-  hover = -1;
+
   interact = (action: Interaction): boolean => {
     switch (action.type) {
       case "touchstart":

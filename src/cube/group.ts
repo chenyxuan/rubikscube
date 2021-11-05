@@ -202,7 +202,7 @@ export class GroupTable {
             }
             this.groups[axis] = list;
         }
-        for (const cubelet of cube.initials) {
+        for (const cubelet of cube.cubelets) {
             const index = cubelet.initial;
             let axis: string;
             let layer: number;

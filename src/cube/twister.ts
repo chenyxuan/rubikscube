@@ -346,15 +346,12 @@ export default class Twister {
 
     setup(exp: string, reverse = false, times = 1): void {
         this.finish();
-        this.cube.reset();
         const node = new TwistNode(exp, reverse, times);
         const list = node.parse();
         for (const action of list) {
             this.twist(action, true, true);
         }
         this.cube.dirty = true;
-        this.cube.history.clear();
-        this.cube.history.init = exp;
         this.cube.callback();
     }
 
@@ -437,17 +434,8 @@ export default class Twister {
             }
         }
         if (success) {
-            this.cube.record(action);
         }
         return success;
     }
 
-    undo(): void {
-        if (this.cube.history.length == 0) {
-            return;
-        }
-        const last = this.cube.history.last;
-        const reverse = new TwistAction(last.sign, !last.reverse, 1);
-        this.twist(reverse, false, true);
-    }
 }

@@ -10,7 +10,6 @@ export enum Face {
 }
 
 export class Frame extends THREE.BufferGeometry {
-
     private static readonly _indices = [
         0, 2, 1,
         0, 3, 2,
@@ -96,7 +95,7 @@ export class Frame extends THREE.BufferGeometry {
 
 
 export class Sticker extends THREE.ExtrudeGeometry {
-    constructor(size: number, depth: number, arrow: boolean) {
+    constructor(size: number, depth: number) {
         size = size / 2;
         const left = -size;
         const bottom = size;
@@ -115,21 +114,6 @@ export class Sticker extends THREE.ExtrudeGeometry {
         shape.lineTo(left + radius, top);
         shape.quadraticCurveTo(left, top, left, top + radius);
         shape.closePath();
-
-        if (arrow) {
-            const h = size * 0.6;
-            const w = h * 0.8;
-            const arrow = new THREE.Path();
-            arrow.moveTo(0, h);
-            arrow.lineTo(-w, 0);
-            arrow.lineTo(-w / 2, 0);
-            arrow.lineTo(-w / 2, -h);
-            arrow.lineTo(w / 2, -h);
-            arrow.lineTo(w / 2, 0);
-            arrow.lineTo(w, 0);
-            arrow.closePath();
-            shape.holes.push(arrow);
-        }
 
         super(shape, { bevelEnabled: false, depth: depth });
     }
