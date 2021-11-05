@@ -1,4 +1,4 @@
-import { cubelet_defs, cubelet_core, cubelet_frame, cubelet_sticker, face_attrs } from "./utils";
+import { cubelet_defs, cubelet_core, cubelet_frame, cubelet_sticker, face_attrs, directionToIndex } from "./utils";
 import * as THREE from "three";
 import { indexToDirection } from "./utils"
 
@@ -14,18 +14,10 @@ export default class Cubelet extends THREE.Group {
   stickers: THREE.Mesh[];
 
   set vector(vector: THREE.Vector3) {
-    const half = 1;
-    let x = vector.x;
-    let y = vector.y;
-    let z = vector.z;
-    this._vector.set(x, y, z);
-    x = Math.round(x + half);
-    y = Math.round(y + half);
-    z = Math.round(z + half);
-    this.index = z * 9 + y * 3 + x;
-    this.position.x = cubelet_defs.size * this._vector.x;
-    this.position.y = cubelet_defs.size * this._vector.y;
-    this.position.z = cubelet_defs.size * this._vector.z;
+    this._vector.copy(vector);
+    this.index = directionToIndex(vector);
+    this.position.copy(vector);
+    this.position.multiplyScalar(cubelet_defs.size);
   }
 
   get vector(): THREE.Vector3 {

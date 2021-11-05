@@ -1,44 +1,45 @@
+export class Twist {
+    departure: number;
+    arrival: number;
+    durantion: number;
 
-export class Tween {
-    begin: number;
-    end: number;
-    duration: number;
-    callback: Function;
-    value: number;
-    constructor(begin: number, end: number, duration: number, callback: Function) {
-        this.begin = begin;
-        this.end = end;
-        this.duration = duration;
-        this.callback = callback;
-        this.value = 0;
+    elapsed: number;
+    current: number;
+
+    callback_func: ((angle : number) => boolean);
+    
+    constructor(depature : number, arrival : number, duration : number, callback_func : ((angle : number) => boolean)) {
+        this.departure = depature;
+        this.arrival = arrival;
+        this.durantion = duration;
+        this.callback_func = callback_func;
+
+        this.elapsed = 0;
     }
 
     finish(): void {
-        this.callback(this.end);
+        this.elapsed = this.durantion;
+        this.current = this.arrival;
+        this.callback();
     }
 
-    update(): boolean {
-        this.value++;
-        // y = 1 - (1-x)^2
-        let elapsed = this.value / this.duration;
-        elapsed = elapsed > 1 ? 1 : elapsed;
-        elapsed = elapsed < 0 ? 0 : elapsed;
-        elapsed = elapsed - 1;
-        elapsed = 1 - elapsed * elapsed;
-        const value = elapsed == 1 ? this.end : this.begin + (this.end - this.begin) * elapsed;
-        return this.callback(value);
+    // 1 - (1-x)^2
+    update(): void {
+        this.elapsed++;
+        const frac = Math.min(Math.max(this.elapsed / this.durantion, 0), 1);
+        this.current = frac == 1 ? this.arrival : (this.departure + (this.arrival - this.departure) * (1 - (1 - frac) * (1 - frac)));
+    }
+
+    callback(): boolean {
+        return this.callback_func(this.current);
     }
 }
 
-export class Tweener {
-    tweens: Tween[];
-
-    get length(): number {
-        return this.tweens.length;
-    }
+export class Twister {
+    twists: Twist[];
 
     constructor() {
-        this.tweens = [];
+        this.twists = [];
         this.loop();
     }
 
@@ -47,52 +48,45 @@ export class Tweener {
         this.update();
     }
 
-    tween(begin: number, end: number, duration: number, update: Function): Tween {
-        const tween = new Tween(begin, end, duration, update);
-        this.tweens.push(tween);
-        return tween;
-    }
-
-    update(): boolean {
-        if (this.tweens.length === 0) return false;
-        let i = 0;
-        let len = this.tweens.length;
-        while (i < len) {
-            if (this.tweens[i].update()) {
-                this.tweens.splice(i, 1);
-                len--;
+    update(): void {
+        let cur = 0;
+        let end = this.twists.length;
+        while (cur < end) {
+            this.twists[cur].update();
+            if (this.twists[cur].callback()) {
+                this.twists.splice(cur, 1);
+                end--;
             } else {
-                i++;
+                cur++;
             }
         }
-        return true;
     }
 
-    finish(tween: Tween | undefined = undefined): void {
-        if (tween) {
-            for (let i = 0; i < this.tweens.length; i++) {
-                if (this.tweens[i] == tween) {
-                    tween.finish();
-                    this.tweens.splice(i, 1);
-                    return;
+    finish(twist: Twist | undefined = undefined): void {
+        if (twist) {
+            for (let i = 0; i < this.twists.length; i++) {
+                if (this.twists[i] == twist) {
+                    twist.finish();
+                    this.twists.splice(i, 1);
+                    break;
                 }
             }
         } else {
-            const tweens = this.tweens.splice(0, this.tweens.length);
-            for (const tween of tweens) {
-                tween.finish();
+            const twists = this.twists.splice(0);
+            for (const twist of twists) {
+                twist.finish();
             }
         }
     }
 
-    cancel(tween: Tween): void {
-        for (let i = 0; i < this.tweens.length; i++) {
-            if (this.tweens[i] == tween) {
-                this.tweens.splice(i, 1);
-                return;
+    cancel(twist: Twist): void {
+        for (let i = 0; i < this.twists.length; i++) {
+            if (this.twists[i] == twist) {
+                this.twists.splice(i, 1);
+                break;
             }
         }
     }
 }
 
-export const tweener = new Tweener();
+export const twister = new Twister();

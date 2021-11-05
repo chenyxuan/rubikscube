@@ -47,8 +47,16 @@ export const cubelet_sticker = new Sticker(
   cubelet_defs._sticker_depth
 );
 
-export const indexToDirection = (index : number) : {[key: string]: number} => {
-  return {x : index % 3 - 1, y : Math.floor(index / 3) % 3 - 1, z : Math.floor(index / 9) - 1};
+export const indexToDirection = (index : number) : Vector3 => {
+  return new Vector3(index % 3 - 1, Math.floor(index / 3) % 3 - 1, Math.floor(index / 9) - 1);
+}
+
+export const directionToIndex = (drctn : Vector3) : number => {
+  return Math.round((drctn.x + 1) + (drctn.y + 1) * 3 + (drctn.z + 1) * 9);
+}
+
+export const indexToLayer = (index : number) => {
+  return { x : index % 3, y : Math.floor(index / 3) % 3, z : Math.floor(index / 9)};
 }
 
 export const face_attrs = [
@@ -90,3 +98,15 @@ export const face_attrs = [
     rotation : new Vector3(2 * Math.PI, 0, 0),
   },
 ]
+
+export const axis_vector : { [key: string]: THREE.Vector3 } = {
+  a: new THREE.Vector3(1, 1, 1),
+  x: new THREE.Vector3(-1, 0, 0),
+  y: new THREE.Vector3(0, -1, 0),
+  z: new THREE.Vector3(0, 0, -1),
+};
+
+export const config = {
+  frames : 30,
+  sensibility : 0.5,
+}

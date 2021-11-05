@@ -3,9 +3,9 @@ import { Interaction } from "./interactor";
 import CubeGroup from "./group";
 import * as THREE from "three";
 import World from "./world";
-import { tweener } from "./twister";
+import { twister } from "./twister";
 import { Face } from "./utils_internal";
-import { cubelet_defs } from "./utils";
+import { axis_vector, cubelet_defs } from "./utils";
 
 
 export class Holder {
@@ -96,7 +96,7 @@ export default class Controller {
     const index = this.holder.index;
     const order = 3;
     for (const axis of ["x", "y", "z"]) {
-      const vector = CubeGroup.AXIS_VECTOR[axis];
+      const vector = axis_vector[axis];
       if (vector.dot(plane) === 0 && vector.dot(finger) === 0) {
         let layer = 0;
         switch (axis) {
@@ -208,7 +208,7 @@ export default class Controller {
         for (const group of this.world.cube.table.groups[this.axis[0]]) {
           let success = group.drag();
           while (!success) {
-            tweener.finish();
+            twister.finish();
             success = group.drag();
           }
           contingle.add(group.angle);
@@ -242,7 +242,7 @@ export default class Controller {
         }
         let success = this.group.drag();
         while (!success) {
-          tweener.finish();
+          twister.finish();
           success = this.group.drag();
         }
         this.contingle = this.group.angle;
@@ -255,7 +255,7 @@ export default class Controller {
         const start = this.intersect(this.down, this.holder.plane);
         const end = this.intersect(this.move, this.holder.plane);
         this.vector.subVectors(end, start).multiply(this.holder.vector);
-        const vector = CubeGroup.AXIS_VECTOR[this.group.axis];
+        const vector = axis_vector[this.group.axis];
         this.angle =
           ((-(this.vector.x + this.vector.y + this.vector.z) * (vector.x + vector.y + vector.z)) / cubelet_defs.size) *
           Math.PI *

@@ -1,29 +1,26 @@
 import * as THREE from "three";
 import Cubelet from "./cubelet";
-import { Tween, tweener } from "./twister";
+import { Twist, twister } from "./twister";
 import Cube from "./cube";
+import { axis_vector, config, indexToLayer } from "./utils";
 
 export default class CubeGroup extends THREE.Group {
-    public static frames = 30;
-    public static readonly AXIS_VECTOR: { [key: string]: THREE.Vector3 } = {
-        a: new THREE.Vector3(1, 1, 1),
-        x: new THREE.Vector3(-1, 0, 0),
-        y: new THREE.Vector3(0, -1, 0),
-        z: new THREE.Vector3(0, 0, -1),
-    };
-
-    cube: Cube;
+    holding : boolean;
+    
     cubelets: Cubelet[];
     indices: number[];
+
+    cube: Cube;
     axis: string;
     layer: number;
-    private holding = false;
-    private tween: Tween | undefined = undefined;
+    
+    twisting: Twist | undefined = undefined;
 
     _angle: number;
+
     set angle(angle) {
         this._angle = angle;
-        this.setRotationFromAxisAngle(CubeGroup.AXIS_VECTOR[this.axis], this._angle);
+        this.setRotationFromAxisAngle(axis_vector[this.axis], angle);
         this.updateMatrix();
         this.cube.dirty = true;
     }
@@ -34,68 +31,49 @@ export default class CubeGroup extends THREE.Group {
 
     constructor(cube: Cube, axis: string, layer: number) {
         super();
-        this.cube = cube;
         this._angle = 0;
-        this.cubelets = [];
-        this.indices = [];
-        this.matrixAutoUpdate = false;
-        this.updateMatrix();
+        this.holding = false;
+
+        this.cube = cube;
         this.axis = axis;
         this.layer = layer;
 
-        const half = 1;
-        const table: { [key: string]: string }[] = [
-            {
-                x: "R",
-                y: "U",
-                z: "F",
-            },
-            {
-                x: "L'",
-                y: "D'",
-                z: "B'",
-            },
-            {
-                x: "M'",
-                y: "E'",
-                z: "S",
-            },
-        ];
-        let type = 0;
-        if (this.layer === half) {
-            layer = 0;
-            type = 2;
-        } else if (this.layer < half) {
-            type = 1;
-        } else {
-            layer = 3 - layer - 1;
+        this.cubelets = [];
+        this.indices = [];
+
+        for (let i = 0; i < 27; i++) {
+            const ilayer = indexToLayer(i);
+            if (axis == "x" && ilayer.x == layer
+                || axis == "y" && ilayer.y == layer
+                || axis == "z" && ilayer.z == layer) {
+                this.indices.push(i);
+            }
         }
-        const name = table[type][this.axis];
-        this.name = (layer === 0 ? "" : String(layer + 1)) + name;
+        this.matrixAutoUpdate = false;
+        this.updateMatrix();
     }
 
     cancel(): number {
-        if (this.tween) {
-            let angle = this.tween.end;
-            tweener.cancel(this.tween);
-            this.tween = undefined;
-            angle = Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);
-            return angle;
+        if (this.twisting) {
+            let angle = this.twisting.arrival;
+            twister.cancel(this.twisting);
+            this.twisting = undefined;
+            return Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);
         }
         return 0;
     }
 
     finish(): number {
-        if (this.tween) {
-            const angle = this.tween.end - this.angle;
-            tweener.finish(this.tween);
-            this.tween = undefined;
+        if (this.twisting) {
+            const angle = this.twisting.arrival - this.angle;
+            twister.finish(this.twisting);
+            this.twisting = undefined;
             return angle;
         }
         return 0;
     }
 
-    private hold(): boolean {
+    hold(): boolean {
         const success = this.cube.lock(this.axis, this.layer);
         if (!success) {
             return false;
@@ -120,7 +98,7 @@ export default class CubeGroup extends THREE.Group {
 
     drop(): void {
         this.holding = false;
-        this.tween = undefined;
+        this.twisting = undefined;
         while (true) {
             const cubelet = this.cubelets.pop();
             if (undefined === cubelet) {
@@ -153,13 +131,12 @@ export default class CubeGroup extends THREE.Group {
         if (fast) {
             this.angle = angle;
         }
-        const delta = angle - this.angle;
         if (Math.abs(this.angle - angle) < 1e-6) {
             this.drop();
         } else {
-            const d = Math.abs(delta) / (Math.PI / 2);
-            const duration = CubeGroup.frames * (2 - 2 / (d + 1));
-            this.tween = tweener.tween(this.angle, angle, duration, (value: number) => {
+            const d = Math.abs(angle - this.angle) / (Math.PI / 2);
+            const duration = config.frames * (2 - 2 / (d + 1));
+            this.twisting = new Twist(this.angle, angle, duration, (value: number) => {
                 this.angle = value;
                 if (Math.abs(this.angle - angle) < 1e-6) {
                     this.drop();
@@ -167,85 +144,31 @@ export default class CubeGroup extends THREE.Group {
                 }
                 return false;
             });
+            twister.twists.push(this.twisting);
         }
         return true;
     }
 
     rotate(cubelet: Cubelet): void {
-        cubelet.rotateOnWorldAxis(CubeGroup.AXIS_VECTOR[this.axis], this.angle);
-        cubelet.vector = cubelet.vector.applyAxisAngle(CubeGroup.AXIS_VECTOR[this.axis], this.angle);
+        cubelet.rotateOnWorldAxis(axis_vector[this.axis], this.angle);
+        cubelet.vector = cubelet.vector.applyAxisAngle(axis_vector[this.axis], this.angle);
         cubelet.updateMatrix();
     }
 }
 
-export class RotateAction {
-    group: CubeGroup;
-    twist: number;
-    constructor(group: CubeGroup, twist: number) {
-        this.group = group;
-        this.twist = twist;
-    }
-}
 
 export class GroupTable {
-    private order: number;
     groups: { [key: string]: CubeGroup[] };
 
     constructor(cube: Cube) {
-        this.order = 3;
         this.groups = {};
         for (const axis of ["x", "y", "z"]) {
             const list: CubeGroup[] = [];
-            for (let layer = 0; layer < this.order; layer++) {
-                const g = new CubeGroup(cube, axis, layer);
-                list[layer] = g;
+            for (let i = 0; i < 3; i++) {
+                list.push(new CubeGroup(cube, axis, i));
             }
             this.groups[axis] = list;
         }
-        for (const cubelet of cube.cubelets) {
-            const index = cubelet.initial;
-            let axis: string;
-            let layer: number;
-            let group: CubeGroup;
-
-            axis = "x";
-            layer = index % this.order;
-            group = this.groups[axis][layer];
-            group.indices.push(cubelet.index);
-
-            axis = "y";
-            layer = Math.floor((index % (this.order * this.order)) / this.order);
-            group = this.groups[axis][layer];
-            group.indices.push(cubelet.index);
-
-            axis = "z";
-            layer = Math.floor(index / (this.order * this.order));
-            group = this.groups[axis][layer];
-            group.indices.push(cubelet.index);
-        }
-    }
-
-    private static AXIS_MAP: { [key: string]: string } = {
-        R: "x",
-        L: "-x",
-        U: "y",
-        D: "-y",
-        F: "z",
-        B: "-z",
-        M: "-x",
-        E: "-y",
-        S: "z",
-    };
-
-    face(face: string): CubeGroup {
-        let layer = 0;
-        let sign = GroupTable.AXIS_MAP[face];
-        if (sign.length == 2) {
-            sign = sign[1];
-        } else {
-            layer = this.order - 1;
-        }
-        return this.groups[sign][layer];
     }
 
 }
