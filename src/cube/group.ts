@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Cubelet from "./cubelet";
-import { TwistAction, Tween, tweener } from "./twister";
+import { Tween, tweener } from "./twister";
 import Cube from "./cube";
 
 export default class CubeGroup extends THREE.Group {
@@ -43,7 +43,7 @@ export default class CubeGroup extends THREE.Group {
         this.axis = axis;
         this.layer = layer;
 
-        const half = (this.cube.order - 1) / 2;
+        const half = 1;
         const table: { [key: string]: string }[] = [
             {
                 x: "R",
@@ -68,7 +68,7 @@ export default class CubeGroup extends THREE.Group {
         } else if (this.layer < half) {
             type = 1;
         } else {
-            layer = this.cube.order - layer - 1;
+            layer = 3 - layer - 1;
         }
         const name = table[type][this.axis];
         this.name = (layer === 0 ? "" : String(layer + 1)) + name;
@@ -192,7 +192,7 @@ export class GroupTable {
     groups: { [key: string]: CubeGroup[] };
 
     constructor(cube: Cube) {
-        this.order = cube.order;
+        this.order = 3;
         this.groups = {};
         for (const axis of ["x", "y", "z"]) {
             const list: CubeGroup[] = [];
@@ -248,130 +248,4 @@ export class GroupTable {
         return this.groups[sign][layer];
     }
 
-    convert(action: TwistAction): RotateAction[] {
-        const result: RotateAction[] = [];
-        let sign = action.sign;
-        if (sign.match(/.[Ww]/)) {
-            sign = sign.toLowerCase().replace("w", "");
-        }
-        if (/[XYZ]/.test(sign)) {
-            sign = sign.toLowerCase();
-        }
-        let group: CubeGroup;
-        let twist: number = action.times * (action.reverse ? -1 : 1);
-        let layer: number;
-        if (sign.length === 1) {
-            switch (sign) {
-                case "x":
-                case "y":
-                case "z":
-                    for (let layer = 0; layer < this.order; layer++) {
-                        group = this.groups[sign][layer];
-                        result.push(new RotateAction(group, twist));
-                    }
-                    return result;
-                case "R":
-                case "U":
-                case "F":
-                case "L":
-                case "D":
-                case "B":
-                    layer = 0;
-                    sign = GroupTable.AXIS_MAP[sign.toUpperCase()];
-                    if (sign.length == 2) {
-                        twist = -twist;
-                        sign = sign[1];
-                    } else {
-                        layer = this.order - 1;
-                    }
-                    group = this.groups[sign][layer];
-                    result.push(new RotateAction(group, twist));
-                    return result;
-                case "r":
-                case "u":
-                case "f":
-                case "l":
-                case "d":
-                case "b":
-                    layer = 0;
-                    sign = GroupTable.AXIS_MAP[sign.toUpperCase()];
-                    if (sign.length == 2) {
-                        twist = -twist;
-                        sign = sign[1];
-                    } else {
-                        layer = this.order - 2;
-                    }
-                    group = this.groups[sign][layer];
-                    result.push(new RotateAction(group, twist));
-                    group = this.groups[sign][layer + 1];
-                    result.push(new RotateAction(group, twist));
-                    return result;
-                case "E":
-                case "M":
-                case "S":
-                    layer = Math.floor((this.order - 1) / 2);
-                    sign = GroupTable.AXIS_MAP[sign.toUpperCase()];
-                    if (sign.length == 2) {
-                        twist = -twist;
-                        sign = sign[1];
-                    }
-                    group = this.groups[sign][layer];
-                    result.push(new RotateAction(group, twist));
-                    if (this.order % 2 == 0) {
-                        group = this.groups[sign][layer + 1];
-                        result.push(new RotateAction(group, twist));
-                    }
-                    return result;
-                case "e":
-                case "m":
-                case "s":
-                    sign = GroupTable.AXIS_MAP[sign.toUpperCase()];
-                    if (sign.length == 2) {
-                        twist = -twist;
-                        sign = sign[1];
-                    }
-                    for (let layer = 1; layer < this.order - 1; layer++) {
-                        group = this.groups[sign][layer];
-                        result.push(new RotateAction(group, twist));
-                    }
-                    return result;
-            }
-        } else {
-            const list = sign.match(/([0123456789]*)(-?)([0123456789]*)([lrudfb])/i);
-            if (list == null) {
-                return result;
-            }
-            let from = Number(list[1]);
-            let to = Number(list[3]);
-            if (to === NaN || to === 0) {
-                if (/[lrudfb]/.test(list[4])) {
-                    to = 1;
-                } else {
-                    to = from;
-                }
-            }
-            if (from > this.order) {
-                from = this.order;
-            }
-            if (to > this.order) {
-                to = this.order;
-            }
-            sign = GroupTable.AXIS_MAP[list[4].toUpperCase()];
-            if (sign.length == 2) {
-                twist = -twist;
-                sign = sign[1];
-            } else {
-                from = this.order - from + 1;
-                to = this.order - to + 1;
-            }
-            if (from > to) {
-                [from, to] = [to, from];
-            }
-            for (let layer = from - 1; layer < to; layer++) {
-                group = this.groups[sign][layer];
-                result.push(new RotateAction(group, twist));
-            }
-        }
-        return result;
-    }
 }

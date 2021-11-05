@@ -118,28 +118,3 @@ export class Sticker extends THREE.ExtrudeGeometry {
         super(shape, { bevelEnabled: false, depth: depth });
     }
 }
-
-export class Mirror extends THREE.ShapeGeometry {
-    constructor(size: number) {
-        size = size / 2;
-        const left = -size;
-        const bottom = size;
-        const top = -size;
-        const right = size;
-        const radius = size / 4;
-
-        const shape = new THREE.Shape();
-        shape.moveTo(left, top + radius);
-        shape.lineTo(left, bottom - radius);
-        shape.quadraticCurveTo(left, bottom, left + radius, bottom);
-        shape.lineTo(right - radius, bottom);
-        shape.quadraticCurveTo(right, bottom, right, bottom - radius);
-        shape.lineTo(right, top + radius);
-        shape.quadraticCurveTo(right, top, right - radius, top);
-        shape.lineTo(left + radius, top);
-        shape.quadraticCurveTo(left, top, left, top + radius);
-        shape.closePath();
-
-        super(shape);
-    }
-}

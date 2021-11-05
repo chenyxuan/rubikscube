@@ -3,7 +3,7 @@ import { Interaction } from "./interactor";
 import CubeGroup from "./group";
 import * as THREE from "three";
 import World from "./world";
-import { TwistAction, tweener } from "./twister";
+import { tweener } from "./twister";
 import { Face } from "./utils_internal";
 import { cubelet_defs } from "./utils";
 
@@ -18,11 +18,13 @@ export class Holder {
 }
 
 export default class Controller {
-  public dragging = false;
+  dragging : boolean;
+  tick: number;
+  world: World;
+  sensitivity = 0.5;
   public rotating = false;
   public angle = 0;
   public contingle = 0;
-  public taps: ((index: number, face: Face | null) => void)[];
   public ray = new THREE.Ray();
   public down = new THREE.Vector2(0, 0);
   public move = new THREE.Vector2(0, 0);
@@ -56,11 +58,10 @@ export default class Controller {
     this._disable = value;
   }
 
-  world: World;
-  sensitivity = 0.5;
   constructor(world: World) {
+    this.tick = new Date().getTime();
+    this.dragging = false;
     this.world = world;
-    this.taps = [];
     this.loop();
   }
 
@@ -93,7 +94,7 @@ export default class Controller {
     const plane = this.holder.plane.normal;
     const finger = this.holder.vector;
     const index = this.holder.index;
-    const order = this.world.cube.order;
+    const order = 3;
     for (const axis of ["x", "y", "z"]) {
       const vector = CubeGroup.AXIS_VECTOR[axis];
       if (vector.dot(plane) === 0 && vector.dot(finger) === 0) {
@@ -151,7 +152,7 @@ export default class Controller {
             Math.pow(point.z - this.ray.origin.z, 2);
           if (distance == 0 || d < distance) {
             this.holder.plane = plane;
-            const order = this.world.cube.order;
+            const order = 3;
             x = Math.max(0, Math.min(order - 1, Math.floor((x + 0.5) * order)));
             y = Math.max(0, Math.min(order - 1, Math.floor((y + 0.5) * order)));
             z = Math.max(0, Math.min(order - 1, Math.floor((z + 0.5) * order)));
@@ -297,9 +298,6 @@ export default class Controller {
           face = Face.F;
           break;
       }
-      for (const tap of this.taps) {
-        tap(this.holder.index, face);
-      }
     }
     if (this.rotating) {
       let angle = this.angle;
@@ -339,8 +337,6 @@ export default class Controller {
     this.dragging = false;
     this.rotating = false;
   }
-
-  tick: number = new Date().getTime();
 
   interact = (action: Interaction): boolean => {
     switch (action.type) {

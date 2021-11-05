@@ -1,7 +1,7 @@
 
 import * as THREE from "three";
 import { Vector3 } from "three";
-import {Frame, Mirror, Sticker} from "./utils_internal";
+import {Frame, Sticker} from "./utils_internal";
 
 export const cubelet_colors: { [key: string]: string } = {
   R: "#B71C1C",

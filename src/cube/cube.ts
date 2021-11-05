@@ -7,17 +7,12 @@ export default class Cube extends THREE.Group {
     locks: Map<string, Set<number>>;
     cubelets: Cubelet[] = [];
     table: GroupTable;
-    order: number;
     callbacks: (() => void)[] = [];
 
     constructor() {
         super();
-        const order = 3;
-        this.order = order;
 
-        this.scale.set(3 / order, 3 / order, 3 / order);
-
-        for (let i = 0; i < order * order * order; i++) {
+        for (let i = 0; i < 27; i++) {
             const cubelet = new Cubelet(i);
             this.cubelets.push(cubelet);
             this.add(cubelet);
