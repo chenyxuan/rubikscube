@@ -36,7 +36,6 @@
     "clipboard": "^2.0.8",
     "css-loader": "^6.5.0",
     "file-loader": "^6.2.0",
-    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.5.0",
     "material-design-icons": "^3.0.1",
     "mini-css-extract-plugin": "^2.4.3",
