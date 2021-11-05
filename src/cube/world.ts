@@ -22,6 +22,14 @@ export default class World {
   
   callbacks: (()=>void)[] = [];
 
+  set dirty(value: boolean) {
+    this.cube.dirty = value;
+  }
+
+  get dirty(): boolean {
+    return this.cube.dirty;
+  }
+
   constructor() {
     this.scene = new THREE.Scene();
     this.scene.matrixAutoUpdate = false;
@@ -45,6 +53,7 @@ export default class World {
     this.controller = new Controller(this);
     this.cube = new Cube();
     this.scene.add(this.cube);
+    this.dirty = true;
     this.scale = 1;
     this.perspective = 9;
 
