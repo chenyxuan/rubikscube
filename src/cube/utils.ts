@@ -15,9 +15,6 @@ export const cubelet_colors: { [key: string]: string } = {
 };
 
 
-
-
-
 export const cubelet_defs = {
   size : 64,
   order : 3,

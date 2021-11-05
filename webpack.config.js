@@ -1,8 +1,10 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
 const path = require("path");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 const isProduction = process.env.NODE_ENV == "production";
 
@@ -19,12 +21,14 @@ const config = {
     open: true,
     host: "localhost",
   },
-  devtool: "inline-source-map",
+  devtool: isProduction ? false : "inline-source-map",
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.html",
     }),
-
+    new CleanWebpackPlugin({
+      dry: !isProduction,
+    }),
     // Add your plugins here
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
@@ -56,6 +60,27 @@ const config = {
       vue$: "vue/dist/vue.esm.js",
     },
     extensions: ["*", ".js", ".ts", ".json"],
+  },
+  performance: {
+    hints: false,
+  },
+  optimization: {
+    minimize: isProduction,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+        parallel: true,
+      }),
+    ],
+    splitChunks: {
+      chunks: "initial",
+      name: "vendor",
+    },
   },
 };
 

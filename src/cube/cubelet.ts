@@ -134,4 +134,101 @@ export default class Cubelet extends THREE.Group {
     this.updateMatrix();
   }
 
+  stick(face: number, value: string): void {
+    let lamber;
+    let basic;
+    if (this.stickers[face] === undefined) {
+      return;
+    }
+    if (value == "remove") {
+      this.stickers[face].visible = false;
+      this.mirrors[face].visible = false;
+      return;
+    }
+    this.stickers[face].visible = true;
+    this.mirrors[face].visible = true;
+    if (value && value.length > 0) {
+      lamber = cubelet_lambers[value];
+      basic = cubelet_basics[value];
+    } else {
+      lamber = this.lamberts[face];
+      basic = this.basics[face];
+    }
+    if (lamber === undefined || basic === undefined) {
+      return;
+    }
+    this.stickers[face].material = lamber;
+    if (this.mirrors[face] instanceof THREE.Mesh) {
+      this.mirrors[face].material = basic;
+    }
+  }
+
+  
+  getFace(face: Face): number {
+    const position = new THREE.Vector3(0, 0, 0);
+    switch (face) {
+      case Face.L:
+        position.x = -1;
+        break;
+      case Face.R:
+        position.x = 1;
+        break;
+      case Face.D:
+        position.y = -1;
+        break;
+      case Face.U:
+        position.y = 1;
+        break;
+      case Face.B:
+        position.z = -1;
+        break;
+      case Face.F:
+        position.z = 1;
+        break;
+      default:
+        break;
+    }
+    this._quaternion.copy(this.quaternion);
+    position.applyQuaternion(this._quaternion.invert());
+    const x = Math.round(position.x);
+    const y = Math.round(position.y);
+    const z = Math.round(position.z);
+    let color = 0;
+    if (x < 0) {
+      color = Face.L;
+    } else if (x > 0) {
+      color = Face.R;
+    } else if (y < 0) {
+      color = Face.D;
+    } else if (y > 0) {
+      color = Face.U;
+    } else if (z < 0) {
+      color = Face.B;
+    } else if (z > 0) {
+      color = Face.F;
+    }
+    return color;
+  }
+
+  getColor(face: Face): string {
+    const sticker = this.stickers[this.getFace(face)];
+    if (!sticker || !sticker.visible) {
+      return "?";
+    }
+    switch (sticker.material) {
+      case cubelet_lambers.L:
+        return "L";
+      case cubelet_lambers.R:
+        return "R";
+      case cubelet_lambers.F:
+        return "F";
+      case cubelet_lambers.B:
+        return "B";
+      case cubelet_lambers.U:
+        return "U";
+      case cubelet_lambers.D:
+        return "D";
+    }
+    return "?";
+  }
 }
