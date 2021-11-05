@@ -1,3 +1,3 @@
 # Rubik's Cube
 
-Online Rubik's cube for beginners.
+An online Rubik's cube for beginners.
