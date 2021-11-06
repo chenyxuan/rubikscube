@@ -1,4 +1,4 @@
-import { cubelet_defs, cubelet_core, cubelet_frame, cubelet_sticker, face_attrs, directionToIndex } from "./utils";
+import { cubelet_defs, cubelet_core, cubelet_frame, cubelet_sticker, cubelet_face_attrs, directionToIndex } from "./utils";
 import * as THREE from "three";
 import { indexToDirection } from "./utils"
 
@@ -39,7 +39,7 @@ export default class Cubelet extends THREE.Group {
     this.lamberts = new Array(6);
     this.stickers = new Array(6);
     for(let i = 0; i < 6; i++) {
-      const face_attr = face_attrs[i];
+      const face_attr = cubelet_face_attrs[i];
       if(face_attr.match(this.vector)) {
         this.lamberts[i] = face_attr.lambert;
         const sticker = new THREE.Mesh(cubelet_sticker, this.lamberts[i]);

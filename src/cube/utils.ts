@@ -1,7 +1,11 @@
-
 import * as THREE from "three";
 import { Vector3 } from "three";
-import {Frame, Sticker} from "./utils_internal";
+import { Frame, Sticker } from "./utils_internal";
+
+export const config = {
+  frames: 30,
+  sensibility: 20 * 1e-4,
+}
 
 export const cubelet_colors: { [key: string]: string } = {
   R: "#B71C1C",
@@ -15,18 +19,14 @@ export const cubelet_colors: { [key: string]: string } = {
   high: "#FF0080",
 };
 
-
 export const cubelet_defs = {
-  size : 64,
-  order : 3,
-  _border_width : 3,
-  _edge_width : 2,
-  _sticker_depth : 0.1,
+  size: 64,
+  _border_width: 3,
+  _edge_width: 2,
+  _sticker_depth: 0.1,
 }
 
-
-export const cubelet_frame : Frame = new Frame(cubelet_defs.size, cubelet_defs._border_width);
-
+export const cubelet_frame: Frame = new Frame(cubelet_defs.size, cubelet_defs._border_width);
 
 export const cubelet_lambers = ((): { [key: string]: THREE.MeshLambertMaterial } => {
   const result: { [key: string]: THREE.MeshLambertMaterial } = {};
@@ -47,66 +47,78 @@ export const cubelet_sticker = new Sticker(
   cubelet_defs._sticker_depth
 );
 
-export const indexToDirection = (index : number) : Vector3 => {
-  return new Vector3(index % 3 - 1, Math.floor(index / 3) % 3 - 1, Math.floor(index / 9) - 1);
-}
-
-export const directionToIndex = (drctn : Vector3) : number => {
-  return Math.round((drctn.x + 1) + (drctn.y + 1) * 3 + (drctn.z + 1) * 9);
-}
-
-export const indexToLayer = (index : number) => {
-  return { x : index % 3, y : Math.floor(index / 3) % 3, z : Math.floor(index / 9)};
-}
-
-export const face_attrs = [
-  { 
-    match : (vector : THREE.Vector3) : boolean => { return vector.x == -1}, 
-    lambert : cubelet_lambers.L,
-    position : new Vector3(-cubelet_defs.size / 2, 0, 0),
-    rotation : new Vector3(0, -Math.PI / 2, 0),
+export const cubelet_face_attrs = [
+  {
+    match: (vector: THREE.Vector3): boolean => { return vector.x == -1 },
+    lambert: cubelet_lambers.L,
+    position: new Vector3(-cubelet_defs.size / 2, 0, 0),
+    rotation: new Vector3(0, -Math.PI / 2, 0),
   },
-  { 
-    match : (vector : THREE.Vector3) : boolean => { return vector.x == 1}, 
-    lambert : cubelet_lambers.R,
-    position : new Vector3(cubelet_defs.size / 2, 0, 0),
-    rotation : new Vector3(0, Math.PI / 2, 0),
+  {
+    match: (vector: THREE.Vector3): boolean => { return vector.x == 1 },
+    lambert: cubelet_lambers.R,
+    position: new Vector3(cubelet_defs.size / 2, 0, 0),
+    rotation: new Vector3(0, Math.PI / 2, 0),
   },
-  { 
-    match : (vector : THREE.Vector3) : boolean => { return vector.y == -1}, 
-    lambert : cubelet_lambers.D,
-    position : new Vector3(0, -cubelet_defs.size / 2, 0),
-    rotation : new Vector3(Math.PI / 2, 0, 0),
+  {
+    match: (vector: THREE.Vector3): boolean => { return vector.y == -1 },
+    lambert: cubelet_lambers.D,
+    position: new Vector3(0, -cubelet_defs.size / 2, 0),
+    rotation: new Vector3(Math.PI / 2, 0, 0),
   },
-  { 
-    match : (vector : THREE.Vector3) : boolean => { return vector.y == 1}, 
-    lambert : cubelet_lambers.U,
-    position : new Vector3(0, cubelet_defs.size / 2, 0),
-    rotation : new Vector3(-Math.PI / 2, 0, 0),
+  {
+    match: (vector: THREE.Vector3): boolean => { return vector.y == 1 },
+    lambert: cubelet_lambers.U,
+    position: new Vector3(0, cubelet_defs.size / 2, 0),
+    rotation: new Vector3(-Math.PI / 2, 0, 0),
   },
-  { 
-    match : (vector : THREE.Vector3) : boolean => { return vector.z == -1}, 
-    lambert : cubelet_lambers.B,
-    position : new Vector3(0, 0, -cubelet_defs.size / 2),
-    rotation : new Vector3(Math.PI, 0, 0),
+  {
+    match: (vector: THREE.Vector3): boolean => { return vector.z == -1 },
+    lambert: cubelet_lambers.B,
+    position: new Vector3(0, 0, -cubelet_defs.size / 2),
+    rotation: new Vector3(Math.PI, 0, 0),
   },
-
-  { 
-    match : (vector : THREE.Vector3) : boolean => { return vector.z == 1}, 
-    lambert : cubelet_lambers.F,
-    position : new Vector3(0, 0, cubelet_defs.size / 2),
-    rotation : new Vector3(2 * Math.PI, 0, 0),
+  {
+    match: (vector: THREE.Vector3): boolean => { return vector.z == 1 },
+    lambert: cubelet_lambers.F,
+    position: new Vector3(0, 0, cubelet_defs.size / 2),
+    rotation: new Vector3(2 * Math.PI, 0, 0),
   },
 ]
 
-export const axis_vector : { [key: string]: THREE.Vector3 } = {
+export const cube_size = cubelet_defs.size * 3;
+
+export const axis_vectors: { [key: string]: THREE.Vector3 } = {
   a: new THREE.Vector3(1, 1, 1),
   x: new THREE.Vector3(-1, 0, 0),
   y: new THREE.Vector3(0, -1, 0),
   z: new THREE.Vector3(0, 0, -1),
 };
 
-export const config = {
-  frames : 30,
-  sensibility : 0.5,
+export const axis_planes: { [key: string]: THREE.Plane } = {
+  x: new THREE.Plane(new THREE.Vector3(1, 0, 0), -cube_size / 2),
+  y: new THREE.Plane(new THREE.Vector3(0, 1, 0), -cube_size / 2),
+  z: new THREE.Plane(new THREE.Vector3(0, 0, 1), -cube_size / 2)
+}
+
+export const indexToDirection = (index: number): Vector3 => {
+  return new Vector3(index % 3 - 1, Math.floor(index / 3) % 3 - 1, Math.floor(index / 9) - 1);
+}
+
+export const directionToIndex = (drctn: Vector3): number => {
+  return Math.round((drctn.x + 1) + (drctn.y + 1) * 3 + (drctn.z + 1) * 9);
+}
+
+export const indexToLayer = (index: number)  : { [key: string]: number } => {
+  const result : { [key: string]: number } = { x: index % 3, y: Math.floor(index / 3) % 3, z: Math.floor(index / 9) };
+  return result;
+}
+
+export const worldToIndex = (point : Vector3) : number => {
+  const vector = new Vector3().copy(point);
+  vector.add(new Vector3().setScalar(cube_size / 2));
+  vector.divideScalar(cube_size).multiplyScalar(3).floor();
+  vector.max(new Vector3().setScalar(0));
+  vector.min(new Vector3().setScalar(2));
+  return vector.x + vector.y * 3 + vector.z * 9;
 }

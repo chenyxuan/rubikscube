@@ -2,7 +2,7 @@ import * as THREE from "three";
 import Cubelet from "./cubelet";
 import { Twist, twister } from "./twister";
 import Cube from "./cube";
-import { axis_vector, config, indexToLayer } from "./utils";
+import { axis_vectors, config, indexToLayer } from "./utils";
 
 export default class CubeGroup extends THREE.Group {
     holding : boolean;
@@ -20,7 +20,7 @@ export default class CubeGroup extends THREE.Group {
 
     set angle(angle) {
         this._angle = angle;
-        this.setRotationFromAxisAngle(axis_vector[this.axis], angle);
+        this.setRotationFromAxisAngle(axis_vectors[this.axis], angle);
         this.updateMatrix();
         this.cube.dirty = true;
     }
@@ -55,7 +55,7 @@ export default class CubeGroup extends THREE.Group {
 
     cancel(): number {
         if (this.twisting) {
-            let angle = this.twisting.arrival;
+            const angle = this.twisting.arrival;
             twister.cancel(this.twisting);
             this.twisting = undefined;
             return Math.round(angle / (Math.PI / 2)) * (Math.PI / 2);
@@ -134,8 +134,8 @@ export default class CubeGroup extends THREE.Group {
         if (Math.abs(this.angle - angle) < 1e-6) {
             this.drop();
         } else {
-            const d = Math.abs(angle - this.angle) / (Math.PI / 2);
-            const duration = config.frames * (2 - 2 / (d + 1));
+            const frac = Math.abs(this.angle - angle) / (Math.PI / 2);
+            const duration = config.frames * (2 - 2 / (frac + 1));
             this.twisting = new Twist(this.angle, angle, duration, (value: number) => {
                 this.angle = value;
                 if (Math.abs(this.angle - angle) < 1e-6) {
@@ -150,8 +150,8 @@ export default class CubeGroup extends THREE.Group {
     }
 
     rotate(cubelet: Cubelet): void {
-        cubelet.rotateOnWorldAxis(axis_vector[this.axis], this.angle);
-        cubelet.vector = cubelet.vector.applyAxisAngle(axis_vector[this.axis], this.angle);
+        cubelet.rotateOnWorldAxis(axis_vectors[this.axis], this.angle);
+        cubelet.vector = cubelet.vector.applyAxisAngle(axis_vectors[this.axis], this.angle);
         cubelet.updateMatrix();
     }
 }

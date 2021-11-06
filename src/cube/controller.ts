@@ -5,69 +5,83 @@ import * as THREE from "three";
 import World from "./world";
 import { twister } from "./twister";
 import { Face } from "./utils_internal";
-import { axis_vector, cubelet_defs } from "./utils";
+import { axis_planes, axis_vectors, config, cubelet_defs, cube_size, indexToLayer, worldToIndex } from "./utils";
+import { Box3, Vector2, Vector3 } from "three";
 
 
 export class Holder {
   vector: THREE.Vector3;
   index: number;
-  plane: THREE.Plane;
+  axis: string;
+
   constructor() {
     this.vector = new THREE.Vector3();
+    this.index = -1;
+    this.axis = "";
   }
 }
 
 export default class Controller {
-  dragging : boolean;
-  tick: number;
-  world: World;
-  sensitivity = 0.5;
-  public rotating = false;
-  public angle = 0;
-  public contingle = 0;
-  public ray = new THREE.Ray();
-  public down = new THREE.Vector2(0, 0);
-  public move = new THREE.Vector2(0, 0);
-  public matrix = new THREE.Matrix4();
-  public holder = new Holder();
-  public vector = new THREE.Vector3();
-  public group: CubeGroup | null;
-  public axis: string;
-  public planes = [
-    new THREE.Plane(new THREE.Vector3(1, 0, 0), (-cubelet_defs.size * 3) / 2),
-    new THREE.Plane(new THREE.Vector3(0, 1, 0), (-cubelet_defs.size * 3) / 2),
-    new THREE.Plane(new THREE.Vector3(0, 0, 1), (-cubelet_defs.size * 3) / 2),
-    new THREE.Plane(new THREE.Vector3(-1, 0, 0), (-cubelet_defs.size * 3) / 2),
-    new THREE.Plane(new THREE.Vector3(0, -1, 0), (-cubelet_defs.size * 3) / 2),
-  ];
-  public _lock = false;
-  get lock(): boolean {
-    return this._lock;
-  }
-  set lock(value: boolean) {
-    this.handleUp();
-    this._lock = value;
-  }
+  _lock: boolean;
+  _disable: boolean;
 
-  public _disable = false;
-  get disable(): boolean {
-    return this._disable;
-  }
-  set disable(value: boolean) {
-    this.handleUp();
-    this._disable = value;
-  }
+  world: World;
+  dragging: boolean;
+  rotating: boolean;
+
+  axis: string;
+  angle: number;
+  contingle: number;
+
+  down: Vector2;
+  move: Vector2;
+  down_tick: number;
+
+  holder: Holder;
+  group: CubeGroup | null;
+
 
   constructor(world: World) {
-    this.tick = new Date().getTime();
-    this.dragging = false;
+    this._lock = false;
+    this._disable = false;
+
     this.world = world;
+    this.dragging = false;
+    this.rotating = false;
+
+    this.axis = "";
+    this.angle = 0;
+    this.contingle = 0;
+
+    this.down = new THREE.Vector2(0, 0);
+    this.move = new THREE.Vector2(0, 0);
+    this.down_tick = new Date().getTime();
+
+    this.holder = new Holder();
+    this.group = null;
+
     this.loop();
   }
 
   loop(): void {
     requestAnimationFrame(this.loop.bind(this));
     this.update();
+  }
+
+  set lock(value: boolean) {
+    this.handleUp();
+    this._lock = value;
+  }
+  get lock(): boolean {
+    return this._lock;
+  }
+
+  set disable(value: boolean) {
+    this.handleUp();
+    this._disable = value;
+  }
+  get disable(): boolean {
+    return this._disable;
   }
 
   update(): void {
@@ -79,7 +93,7 @@ export default class Controller {
           this.group.angle += delta;
         }
       } else {
-        const groups = this.world.cube.table.groups[this.axis[0]];
+        const groups = this.world.cube.table.groups[this.axis];
         for (const group of groups) {
           if (group.angle != angle) {
             const delta = (angle - group.angle) / 2;
@@ -91,41 +105,34 @@ export default class Controller {
   }
 
   match(): CubeGroup | null {
-    const plane = this.holder.plane.normal;
+    const plane = axis_planes[this.holder.axis];
     const finger = this.holder.vector;
     const index = this.holder.index;
-    const order = 3;
+    const ilayer = indexToLayer(index);
     for (const axis of ["x", "y", "z"]) {
-      const vector = axis_vector[axis];
-      if (vector.dot(plane) === 0 && vector.dot(finger) === 0) {
-        let layer = 0;
-        switch (axis) {
-          case "x":
-            layer = index % order;
-            break;
-          case "y":
-            layer = Math.floor((index % (order * order)) / order);
-            break;
-          case "z":
-            layer = Math.floor(index / (order * order));
-            break;
-        }
-        return this.world.cube.table.groups[axis][layer];
+      const vector = axis_vectors[axis];
+      if (vector.dot(plane.normal) === 0 && vector.dot(finger) === 0) {
+        return this.world.cube.table.groups[axis][ilayer[axis]];
       }
     }
     return null;
   }
 
   intersect(point: THREE.Vector2, plane: THREE.Plane): THREE.Vector3 {
+    const matrix = new THREE.Matrix4();
+    const ray = new THREE.Ray();
+    const result = new THREE.Vector3();
+
     const x = (point.x / this.world.width) * 2 - 1;
     const y = -(point.y / this.world.height) * 2 + 1;
-    this.ray.origin.setFromMatrixPosition(this.world.camera.matrixWorld);
-    this.ray.direction.set(x, y, 0.5).unproject(this.world.camera).sub(this.ray.origin).normalize();
-    this.matrix.copy(this.world.scene.matrix);
-    this.matrix.invert();
-    this.ray.applyMatrix4(this.matrix);
-    const result = new THREE.Vector3(Infinity, Infinity, Infinity);
-    this.ray.intersectPlane(plane, result);
+
+    matrix.copy(this.world.scene.matrix);
+    matrix.invert();
+    ray.origin.setFromMatrixPosition(this.world.camera.matrixWorld);
+    ray.direction.set(x, y, 0.5).unproject(this.world.camera).sub(ray.origin).normalize();
+    ray.applyMatrix4(matrix);
+    ray.intersectPlane(plane, result);
+
     return result;
   }
 
@@ -138,30 +145,26 @@ export default class Controller {
     }
     this.dragging = true;
     this.holder.index = -1;
-    let distance = 0;
-    this.planes.forEach((plane) => {
+    let min_dist = Infinity;
+    for (const axis of ["x", "y", "z"]) {
+      const plane = axis_planes[axis];
       const point = this.intersect(this.down, plane);
       if (point !== null) {
-        let x = point.x / cubelet_defs.size / 3;
-        let y = point.y / cubelet_defs.size / 3;
-        let z = point.z / cubelet_defs.size / 3;
-        if (Math.abs(x) <= 0.5001 && Math.abs(y) <= 0.5001 && Math.abs(z) <= 0.5001) {
-          const d =
-            Math.pow(point.x - this.ray.origin.x, 2) +
-            Math.pow(point.y - this.ray.origin.y, 2) +
-            Math.pow(point.z - this.ray.origin.z, 2);
-          if (distance == 0 || d < distance) {
-            this.holder.plane = plane;
-            const order = 3;
-            x = Math.max(0, Math.min(order - 1, Math.floor((x + 0.5) * order)));
-            y = Math.max(0, Math.min(order - 1, Math.floor((y + 0.5) * order)));
-            z = Math.max(0, Math.min(order - 1, Math.floor((z + 0.5) * order)));
-            this.holder.index = z * order * order + y * order + x;
-            distance = d;
+        const cube_margin = cube_size / 2 + 0.001;
+        const boxMin = new Vector3().setScalar(-cube_margin);
+        const boxMax = new Vector3().setScalar(cube_margin);
+        const box = new Box3(boxMin, boxMax);
+        if (box.containsPoint(point)) {
+          const origin = new Vector3().setFromMatrixPosition(this.world.camera.matrixWorld);
+          const dist = point.distanceTo(origin);
+          if (dist < min_dist) {
+            min_dist = dist;
+            this.holder.axis = axis;
+            this.holder.index = worldToIndex(point);
           }
         }
       }
-    }, this);
+    }
   }
 
   handleMove(): void {
@@ -178,43 +181,27 @@ export default class Controller {
       this.dragging = false;
       this.rotating = true;
       if (this.holder.index === -1) {
-        if (dx * dx > dy * dy) {
+        if (Math.abs(dx) > Math.abs(dy)) {
           this.axis = "y";
         } else {
-          const half = this.world.width / 2;
-          const lf = new THREE.Vector3(-(cubelet_defs.size * 3) / 2, 0, (cubelet_defs.size * 3) / 2);
-          lf.applyMatrix4(this.world.scene.matrix).project(this.world.camera);
-          const lx = Math.round(lf.x * half + half);
-
-          const rf = new THREE.Vector3((cubelet_defs.size * 3) / 2, 0, (cubelet_defs.size * 3) / 2);
-          rf.applyMatrix4(this.world.scene.matrix).project(this.world.camera);
-          const rx = Math.round(rf.x * half + half);
-          if (lf.z < rf.z) {
-            if (this.down.x < lx) {
-              this.axis = "z'";
-            } else {
-              this.axis = "x";
-            }
+          if (this.down.x < this.world.width / 2) {
+            this.axis = "x";
           } else {
-            if (this.down.x < rx) {
-              this.axis = "x";
-            } else {
-              this.axis = "z";
-            }
+            this.axis = "z";
           }
         }
         this.group = null;
-        const contingle: Set<number> = new Set();
-        for (const group of this.world.cube.table.groups[this.axis[0]]) {
+        const contingle_set: Set<number> = new Set();
+        for (const group of this.world.cube.table.groups[this.axis]) {
           let success = group.drag();
           while (!success) {
             twister.finish();
             success = group.drag();
           }
-          contingle.add(group.angle);
+          contingle_set.add(group.angle);
         }
-        if (contingle.size == 1) {
-          for (const value of contingle.values()) {
+        if (contingle_set.size == 1) {
+          for (const value of contingle_set.values()) {
             this.contingle = value;
             break;
           }
@@ -222,19 +209,17 @@ export default class Controller {
           this.contingle = 0;
         }
       } else {
-        const start = this.intersect(this.down, this.holder.plane);
-        const end = this.intersect(this.move, this.holder.plane);
-        this.vector.subVectors(end, start);
-        let x = this.vector.x;
-        let y = this.vector.y;
-        let z = this.vector.z;
-        const max = Math.max(Math.abs(x), Math.abs(y), Math.abs(z));
-        x = Math.abs(x) === max ? x : 0;
-        y = Math.abs(y) === max ? y : 0;
-        z = Math.abs(z) === max ? z : 0;
-        this.vector.set(x, y, z);
-        this.holder.vector.copy(this.vector.multiply(this.vector).normalize());
-
+        const plane = axis_planes[this.holder.axis];
+        const start = this.intersect(this.down, plane);
+        const end = this.intersect(this.move, plane);
+        const vector = new Vector3().subVectors(end, start);
+        vector.max(new Vector3().sub(vector));
+        const norm = Math.max(vector.x, vector.y, vector.z);
+        this.holder.vector.copy(
+          norm == vector.x ? new Vector3(1, 0, 0) : (
+            norm == vector.y ? new Vector3(0, 1, 0) :
+              new Vector3(0, 0, 1)
+          ));
         this.group = this.match();
         if (!this.group) {
           this.rotating = false;
@@ -246,67 +231,44 @@ export default class Controller {
           success = this.group.drag();
         }
         this.contingle = this.group.angle;
-        this.vector.crossVectors(this.holder.vector, this.holder.plane.normal);
-        this.holder.vector.multiplyScalar(this.vector.x + this.vector.y + this.vector.z);
+        vector.crossVectors(this.holder.vector, plane.normal);
+        this.holder.vector.multiplyScalar(vector.x + vector.y + vector.z);
       }
     }
     if (this.rotating) {
       if (this.group) {
-        const start = this.intersect(this.down, this.holder.plane);
-        const end = this.intersect(this.move, this.holder.plane);
-        this.vector.subVectors(end, start).multiply(this.holder.vector);
-        const vector = axis_vector[this.group.axis];
+        const plane = axis_planes[this.holder.axis];
+        const start = this.intersect(this.down, plane);
+        const end = this.intersect(this.move, plane);
+        const vector = new Vector3().subVectors(end, start);
+        vector.multiply(this.holder.vector);
         this.angle =
-          ((-(this.vector.x + this.vector.y + this.vector.z) * (vector.x + vector.y + vector.z)) / cubelet_defs.size) *
-          Math.PI *
-          this.sensitivity;
+          (vector.x + vector.y + vector.z) * 
+          config.sensibility;
       } else {
         const dx = this.move.x - this.down.x;
         const dy = this.move.y - this.down.y;
-        switch (this.axis) {
-          case "y":
-            this.angle = (-dx / cubelet_defs.size) * Math.PI * this.sensitivity;
-            break;
-          case "x":
-            this.angle = (-dy / cubelet_defs.size) * Math.PI * this.sensitivity;
-            break;
-          case "z":
-            this.angle = (dy / cubelet_defs.size) * Math.PI * this.sensitivity;
-            break;
-          case "z'":
-            this.angle = (-dy / cubelet_defs.size) * Math.PI * this.sensitivity;
-            break;
-          default:
-            this.angle = 0;
-            break;
-        }
+        this.angle = config.sensibility * (
+          this.axis == "y" ? -dx :
+          (
+            this.axis == "x" ? -dy :
+            (
+              dy
+            )
+          )
+        )
       }
     }
   }
 
   handleUp(): void {
-    if (this.dragging) {
-      let face = null;
-      switch (this.holder.plane) {
-        case this.planes[0]:
-          face = Face.R;
-          break;
-        case this.planes[1]:
-          face = Face.U;
-          break;
-        case this.planes[2]:
-          face = Face.F;
-          break;
-      }
-    }
     if (this.rotating) {
       let angle = this.angle;
       if (!this.lock) {
         if (Math.abs(angle) < Math.PI / 4) {
-          const tick = new Date().getTime();
-          const speed = (Math.abs(angle) / (tick - this.tick)) * 1000;
+          const speed = (Math.abs(angle) / (new Date().getTime() - this.down_tick)) * 1000;
           if (speed > 0.2) {
-            angle = angle == 0 ? 0 : ((angle / Math.abs(angle)) * Math.PI) / 2;
+            angle = angle == 0 ? 0 : ((angle / Math.abs(angle)) * (Math.PI / 2));
           }
         }
         angle = angle + this.contingle;
@@ -315,20 +277,10 @@ export default class Controller {
       }
       if (this.group) {
         this.group.twist(angle, false);
-        if (angle != 0) {
-          let times = Math.round(angle / (Math.PI / 2));
-          const reverse = times < 0;
-          times = Math.abs(times);
-        }
       } else {
-        const groups = this.world.cube.table.groups[this.axis[0]];
+        const groups = this.world.cube.table.groups[this.axis];
         for (const group of groups) {
           group.twist(angle, false);
-        }
-        if (angle != 0) {
-          let times = Math.round(angle / (Math.PI / 2));
-          const reverse = times < 0;
-          times = Math.abs(times);
         }
       }
     }
@@ -344,7 +296,7 @@ export default class Controller {
       case "mousedown":
         this.down.x = action.x;
         this.down.y = action.y;
-        this.tick = new Date().getTime();
+        this.down_tick = new Date().getTime();
         this.handleDown();
         break;
       case "mousemove":
