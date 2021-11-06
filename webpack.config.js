@@ -24,7 +24,8 @@ const config = {
   devtool: isProduction ? false : "inline-source-map",
   plugins: [
     new HtmlWebpackPlugin({
-      template: "index.html",
+      favicon : "./resource/transparent_favicon.png",
+      template: "./resource/index.html",
     }),
     new CleanWebpackPlugin({
       dry: !isProduction,
