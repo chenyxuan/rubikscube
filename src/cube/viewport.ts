@@ -47,6 +47,7 @@ export default class Viewport extends Vue {
     draw(): void {
         if (this.world.dirty) {
             this.renderer.render(this.world.scene, this.world.camera);
+            this.world.dirty = false;
         }
     }
 }
