@@ -18,17 +18,16 @@ export default class Playground extends Vue {
     @Ref("viewport")
     viewport: Viewport;
 
-    width: number;
-    height: number;
+    width: number = 0;
+    height: number = 0;
+    size: number = 0;
 
     constructor() {
         super();
     }
 
     mounted(): void {
-        this.width = document.documentElement.clientWidth;
-        this.height = document.documentElement.clientHeight;
-        this.viewport.resize(this.width, this.calcuViewportHeight(this.width, this.height));
+        this.$nextTick(this.resize);
         this.loop();
     }
 
@@ -37,7 +36,11 @@ export default class Playground extends Vue {
         this.viewport.draw();
     }
 
-    calcuViewportHeight(width: number, height: number) {
-        return height - Math.ceil(Math.min(width / 6, height / 12)) * 1.5;
+    resize(): void {
+        this.width = document.documentElement.clientWidth;
+        this.height = document.documentElement.clientHeight;
+        this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
+        this.viewport.resize(this.width, this.height - this.size * 2);
     }
+    
 }
