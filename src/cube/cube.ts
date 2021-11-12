@@ -83,14 +83,13 @@ export default class Cube extends THREE.Group {
     }
 
     reset(): void {
-        console.log("reset")
         twister.finish();
         
         for (const cubelet of this.cubelets) {
             this.remove(cubelet);
         }
         this.cubelets.splice(0);
-        
+
         for (let i = 0; i < 27; i++) {
             const cubelet = new Cubelet(i);
             this.cubelets.push(cubelet);
