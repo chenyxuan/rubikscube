@@ -5,7 +5,7 @@ import { indexToDirection } from "./utils"
 export default class Cubelet extends THREE.Group {
   _vector: THREE.Vector3;
   index: number;
-  
+
   lamberts: (THREE.MeshLambertMaterial | undefined)[];
 
   frame: THREE.Mesh;
@@ -38,9 +38,9 @@ export default class Cubelet extends THREE.Group {
 
     this.lamberts = new Array(6);
     this.stickers = new Array(6);
-    for(let i = 0; i < 6; i++) {
+    for (let i = 0; i < 6; i++) {
       const face_attr = cubelet_face_attrs[i];
-      if(face_attr.match(this.vector)) {
+      if (face_attr.match(this.vector)) {
         this.lamberts[i] = face_attr.lambert;
         const sticker = new THREE.Mesh(cubelet_sticker, this.lamberts[i]);
         sticker.rotation.setFromVector3(face_attr.rotation);

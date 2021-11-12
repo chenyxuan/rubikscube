@@ -110,12 +110,12 @@ export const directionToIndex = (drctn: Vector3): number => {
   return Math.round((drctn.x + 1) + (drctn.y + 1) * 3 + (drctn.z + 1) * 9);
 }
 
-export const indexToLayer = (index: number)  : { [key: string]: number } => {
-  const result : { [key: string]: number } = { x: index % 3, y: Math.floor(index / 3) % 3, z: Math.floor(index / 9) };
+export const indexToLayer = (index: number): { [key: string]: number } => {
+  const result: { [key: string]: number } = { x: index % 3, y: Math.floor(index / 3) % 3, z: Math.floor(index / 9) };
   return result;
 }
 
-export const worldToIndex = (point : Vector3) : number => {
+export const worldToIndex = (point: Vector3): number => {
   const vector = new Vector3().copy(point);
   vector.add(new Vector3().setScalar(cube_size / 2));
   vector.divideScalar(cube_size).multiplyScalar(3).floor();

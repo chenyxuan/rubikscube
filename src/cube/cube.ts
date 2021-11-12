@@ -84,7 +84,7 @@ export default class Cube extends THREE.Group {
 
     reset(): void {
         twister.finish();
-        
+
         for (const cubelet of this.cubelets) {
             this.remove(cubelet);
         }

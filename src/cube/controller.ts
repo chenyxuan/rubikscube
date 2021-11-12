@@ -242,19 +242,19 @@ export default class Controller {
         const vector = new Vector3().subVectors(end, start);
         vector.multiply(this.holder.vector);
         this.angle =
-          (vector.x + vector.y + vector.z) * 
+          (vector.x + vector.y + vector.z) *
           config.sensibility;
       } else {
         const dx = this.move.x - this.down.x;
         const dy = this.move.y - this.down.y;
         this.angle = config.sensibility * (
           this.axis == "y" ? -dx :
-          (
-            this.axis == "x" ? -dy :
             (
-              dy
+              this.axis == "x" ? -dy :
+                (
+                  dy
+                )
             )
-          )
         )
       }
     }
