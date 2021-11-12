@@ -5,7 +5,7 @@ import { indexToDirection } from "./utils"
 export default class Cubelet extends THREE.Group {
   _vector: THREE.Vector3;
   index: number;
-
+  
   lamberts: (THREE.MeshLambertMaterial | undefined)[];
 
   frame: THREE.Mesh;

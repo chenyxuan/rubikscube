@@ -1,6 +1,8 @@
 import * as THREE from "three"
 import Cubelet from "./cubelet";
 import { GroupTable } from "./group";
+import { twister } from "./twister";
+import { config } from "./utils";
 
 export default class Cube extends THREE.Group {
     dirty: boolean;
@@ -23,12 +25,12 @@ export default class Cube extends THREE.Group {
         this.locks.set("y", new Set());
         this.locks.set("z", new Set());
         this.locks.set("a", new Set());
-        
+
         this.table = new GroupTable(this);
-        
+
         this.matrixAutoUpdate = false;
         this.updateMatrix();
-        
+
         this.dirty = true;
     }
 
@@ -65,4 +67,38 @@ export default class Cube extends THREE.Group {
         axis_lockset?.delete(layer);
     }
 
+    random3(): number {
+        return Math.min(Math.max(Math.floor(Math.random() * 3), 0), 2);
+    }
+
+    scramble(): void {
+        for (let i = 0; i < config.scramble_steps; i++) {
+            const axis = ["x", "y", "z"][this.random3()];
+            const level = this.random3();
+            const angle = (this.random3() - 1) * (Math.PI / 2);
+
+            this.table.groups[axis][level].twist(angle === 0 ? Math.PI : angle, true);
+        }
+
+    }
+
+    reset(): void {
+        console.log("reset")
+        twister.finish();
+        
+        for (const cubelet of this.cubelets) {
+            this.remove(cubelet);
+        }
+        this.cubelets.splice(0);
+        
+        for (let i = 0; i < 27; i++) {
+            const cubelet = new Cubelet(i);
+            this.cubelets.push(cubelet);
+            this.add(cubelet);
+        }
+        this.table = new GroupTable(this);
+        this.dirty = true;
+
+        this.callback();
+    }
 }

@@ -45,10 +45,7 @@ export default class World {
     this.scene.add(this.directional);
     this.scene.updateMatrix();
 
-    this.camera = new THREE.PerspectiveCamera(50, 1, 1, cubelet_defs.size * 32);
-    this.camera.position.x = 0;
-    this.camera.position.y = 0;
-    this.camera.position.z = 0;
+    this.camera = new THREE.PerspectiveCamera();
 
     this.controller = new Controller(this);
     this.cube = new Cube();

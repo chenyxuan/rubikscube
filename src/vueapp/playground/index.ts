@@ -3,7 +3,6 @@ import { Component, Inject, Provide, Ref } from "vue-property-decorator";
 import Viewport from "../../cube/viewport";
 import World from "../../cube/world";
 
-
 @Component({
     template: require("./index.html"),
     components: {
@@ -40,7 +39,14 @@ export default class Playground extends Vue {
         this.width = document.documentElement.clientWidth;
         this.height = document.documentElement.clientHeight;
         this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
-        this.viewport.resize(this.width, this.height - this.size * 2);
+        this.viewport.resize(this.width, this.height - this.size * 1.5);
     }
-    
+
+    scramble(): void {
+        this.world.cube.scramble();
+    }
+
+    reset(): void {
+        this.world.cube.reset();
+    }
 }

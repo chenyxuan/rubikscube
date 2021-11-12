@@ -4,7 +4,6 @@ import CubeGroup from "./group";
 import * as THREE from "three";
 import World from "./world";
 import { twister } from "./twister";
-import { Face } from "./utils_internal";
 import { axis_planes, axis_vectors, config, cubelet_defs, cube_size, indexToLayer, worldToIndex } from "./utils";
 import { Box3, Vector2, Vector3 } from "three";
 
