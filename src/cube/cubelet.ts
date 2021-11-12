@@ -9,8 +9,6 @@ export default class Cubelet extends THREE.Group {
   lamberts: (THREE.MeshLambertMaterial | undefined)[];
 
   frame: THREE.Mesh;
-
-  initial: number;
   stickers: THREE.Mesh[];
 
   set vector(vector: THREE.Vector3) {
@@ -27,7 +25,6 @@ export default class Cubelet extends THREE.Group {
   constructor(index: number) {
     super();
     this._vector = new THREE.Vector3();
-    this.initial = index;
     this.index = index;
 
     const drctn = indexToDirection(index);
