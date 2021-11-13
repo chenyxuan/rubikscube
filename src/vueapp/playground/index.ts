@@ -23,6 +23,8 @@ export default class Playground extends Vue {
     height: number = 0;
     size: number = 0;
 
+    isPlayerMode : boolean = false;
+
     constructor() {
         super();
     }
@@ -41,15 +43,24 @@ export default class Playground extends Vue {
         this.width = document.documentElement.clientWidth;
         this.height = document.documentElement.clientHeight;
         this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
-        this.viewport.resize(this.width, this.height - this.size * 1.5);
+        this.viewport.resize(this.width, this.height - this.size * 2.5);
         this.world.cube.dirty = true;
     }
 
     scramble(): void {
+        this.reset();
         this.world.cube.scramble();
     }
 
     reset(): void {
         this.world.cube.reset();
+    }
+
+    solve(): void {
+        this.isPlayerMode = true;
+    }
+
+    quitplayer(): void {
+        this.isPlayerMode = false;
     }
 }
