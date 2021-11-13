@@ -5,7 +5,7 @@ import { Frame, Sticker } from "./utils_internal";
 export const cube_config = {
   frames: 30,
   sensibility: 20 * 1e-4,
-  scramble_steps: 50,
+  scramble_steps: 20,
 }
 
 export const cubelet_colors: { [key: string]: string } = {
