@@ -1,0 +1,9 @@
+<div v-resize="resize">
+    <v-btn fixed right top fab color="primary" style="user-select: none;"
+        :style="{width: size * 0.9 + 'px', height: size * 0.9 + 'px', 'margin-right': width / 2 - Math.min(size * 5, width / 2) + 'px'}"
+        @click="state = !state">
+        <v-icon :size="size * 0.6">
+            settings
+        </v-icon>
+    </v-btn>
+</div>
