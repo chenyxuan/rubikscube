@@ -1,12 +1,14 @@
 import Vue from "vue";
 import { Component, Inject, Provide, Ref } from "vue-property-decorator";
-import Viewport from "../../cube/viewport";
+import Viewport from "../viewport";
 import World from "../../cube/world";
+import Setting from "../setting";
 
 @Component({
     template: require("./index.html"),
     components: {
-        viewport: Viewport
+        viewport: Viewport,
+        setting: Setting
     },
 })
 

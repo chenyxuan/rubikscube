@@ -1,11 +1,11 @@
 import Vue from "vue";
 import { Component, Inject, Ref } from "vue-property-decorator";
 import * as THREE from "three";
-import Interactor from "./interactor";
-import World from "./world";
+import Interactor from "../../cube/interactor";
+import World from "../../cube/world";
 
 @Component({
-    template: '<div ref="canvas"></div>',
+    template: require("./index.html"),
     components: {},
 })
 
