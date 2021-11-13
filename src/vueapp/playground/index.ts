@@ -4,6 +4,8 @@ import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
 
+import Solver from "../../solver/Solver";
+
 @Component({
     template: require("./index.html"),
     components: {
