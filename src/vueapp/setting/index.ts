@@ -1,43 +1,50 @@
 import Vue from "vue";
-import { Component, Prop, Inject } from "vue-property-decorator";
-import World from "../../cube/world";
+import { Component } from "vue-property-decorator";
+import { cube_config } from "../../cube/utils";
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/default.css'
 
 
 @Component({
-  template: require("./index.html"),
+    template: require("./index.html"),
+    components: {
+        VueSlider
+    }
 })
 export default class Setting extends Vue {
-  @Inject("world")
-  world: World;
+    width: number = 0;
+    height: number = 0;
+    size: number = 0;
 
+    state: boolean = false;
 
-  @Prop({ required: true })
-  value: boolean;
+    constructor() {
+        super();
+    }
 
-  width : number = 0;
-  height : number  = 0;
-  size : number  = 0;
+    mounted(): void {
+        this.resize();
+    }
 
-  state : boolean = false;
+    resize(): void {
+        this.width = document.documentElement.clientWidth;
+        this.height = document.documentElement.clientHeight;
+        this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
+    }
 
-  get show(): boolean {
-    return this.value;
-  }
-  set show(value) {
-    this.$emit("input", value);
-  }
+    get sensibility(): number {
+        return cube_config.sensibility * 1e4;
+    }
 
-  constructor() {
-    super();
-  }
+    set sensibility(value: number) {
+        cube_config.sensibility = value * 1e-4;
+    }
+    
+    get frames(): number {
+        return cube_config.frames;
+    }
 
-  mounted(): void {
-    this.resize();
-  }
-
-  resize(): void {
-    this.width = document.documentElement.clientWidth;
-    this.height = document.documentElement.clientHeight;
-    this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
-  }
+    set frames(value: number) {
+        cube_config.frames = value;
+    }
 }

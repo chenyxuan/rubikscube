@@ -4,7 +4,7 @@ import CubeGroup from "./group";
 import * as THREE from "three";
 import World from "./world";
 import { twister } from "./twister";
-import { axis_planes, axis_vectors, config, cubelet_defs, cube_size, indexToLayer, worldToIndex } from "./utils";
+import { axis_planes, axis_vectors, cube_config, cube_size, indexToLayer, worldToIndex } from "./utils";
 import { Box3, Vector2, Vector3 } from "three";
 
 
@@ -243,11 +243,11 @@ export default class Controller {
         vector.multiply(this.holder.vector);
         this.angle =
           (vector.x + vector.y + vector.z) *
-          config.sensibility;
+          cube_config.sensibility;
       } else {
         const dx = this.move.x - this.down.x;
         const dy = this.move.y - this.down.y;
-        this.angle = config.sensibility * (
+        this.angle = cube_config.sensibility * (
           this.axis == "y" ? -dx :
             (
               this.axis == "x" ? -dy :

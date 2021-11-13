@@ -2,7 +2,7 @@ import * as THREE from "three"
 import Cubelet from "./cubelet";
 import { GroupTable } from "./group";
 import { twister } from "./twister";
-import { config } from "./utils";
+import { cube_config } from "./utils";
 
 export default class Cube extends THREE.Group {
     dirty: boolean;
@@ -72,7 +72,7 @@ export default class Cube extends THREE.Group {
     }
 
     scramble(): void {
-        for (let i = 0; i < config.scramble_steps; i++) {
+        for (let i = 0; i < cube_config.scramble_steps; i++) {
             const axis = ["x", "y", "z"][this.random3()];
             const level = this.random3();
             const angle = (this.random3() - 1) * (Math.PI / 2);

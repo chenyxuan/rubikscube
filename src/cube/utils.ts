@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Vector3 } from "three";
 import { Frame, Sticker } from "./utils_internal";
 
-export const config = {
+export const cube_config = {
   frames: 30,
   sensibility: 20 * 1e-4,
   scramble_steps: 50,
