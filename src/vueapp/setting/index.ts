@@ -47,4 +47,12 @@ export default class Setting extends Vue {
     set frames(value: number) {
         cube_config.frames = value;
     }
+
+    get scramble_steps(): number {
+        return cube_config.scramble_steps;
+    }
+
+    set scramble_steps(value: number) {
+        cube_config.scramble_steps = value;
+    }
 }

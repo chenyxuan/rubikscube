@@ -8,13 +8,17 @@
     </v-btn>
     <v-bottom-sheet v-model="state">
         <v-card text style="margin: auto;">
-            <v-container fluid grid-list-md text-xs-center :style="{width: Math.min(size * 10, width) + 'px'}">
+            <v-container fluid grid-list-md text-xs-center :style="{width: Math.min(size * 8, width) + 'px'}">
+                <v-subheader>
+                    SCRAMBLE LENGTH
+                </v-subheader>
+                <vue-slider v-model="scramble_steps" thumb-label="always" max="60" min="1"></vue-slider>
                 <v-subheader>
                     FRAMES PER TWIST
                 </v-subheader>
                 <vue-slider v-model="frames" thumb-label="always" max="60" min="1"></vue-slider>
                 <v-subheader>
-                    SENSIBILITY
+                    SENSITIVITY
                 </v-subheader>
                 <vue-slider v-model="sensibility" thumb-label="always" max="100" min="1"></vue-slider>
             </v-container>
