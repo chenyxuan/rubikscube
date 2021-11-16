@@ -93,10 +93,6 @@ export default class Playground extends Vue {
         return this._progress;
     }
 
-    thumb_label_prop(): string | boolean {
-        return this._progress !=0 ? 'always' : false;
-    }
-
     thumb_label_slot(): string {
         return this._progress == 0 ? '#' : this.solution[this._progress - 1];
     }
