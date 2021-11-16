@@ -1,6 +1,8 @@
-import { cubelet_defs, cubelet_core, cubelet_frame, cubelet_sticker, cubelet_face_attrs, directionToIndex } from "./utils";
+import { cubelet_defs, cubelet_core, cubelet_frame, cubelet_sticker, cubelet_face_attrs, directionToIndex, facePostionBindings, cubelet_lambers } from "./utils";
 import * as THREE from "three";
 import { indexToDirection } from "./utils"
+import { Face } from "./utils_internal";
+import { Quaternion, Vector3 } from "three";
 
 export default class Cubelet extends THREE.Group {
   _vector: THREE.Vector3;
@@ -49,5 +51,45 @@ export default class Cubelet extends THREE.Group {
 
     this.matrixAutoUpdate = false;
     this.updateMatrix();
+  }
+
+  convertFace(face: Face): number {
+    let position = new Vector3();
+    const quaternion = new Quaternion().copy(this.quaternion);
+    for (const binding of facePostionBindings) {
+      if (binding.face === face) {
+        position.copy(binding.position);
+        break;
+      }
+    }
+    position.applyQuaternion(quaternion.invert());
+    const vector = new Vector3(
+      Math.round(position.x),
+      Math.round(position.y),
+      Math.round(position.z));
+    for (const binding of facePostionBindings) {
+      if (binding.position.equals(vector)) {
+        return binding.face;
+      }
+    }
+    return -1;
+  }
+  getColorOf(face: Face): string {
+    const sticker = this.stickers[this.convertFace(face)];
+    switch (sticker.material) {
+      case cubelet_lambers.L:
+        return "L";
+      case cubelet_lambers.R:
+        return "R";
+      case cubelet_lambers.F:
+        return "F";
+      case cubelet_lambers.B:
+        return "B";
+      case cubelet_lambers.U:
+        return "U";
+      case cubelet_lambers.D:
+        return "D";
+    }
+    return "?";
   }
 }

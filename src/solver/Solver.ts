@@ -58,35 +58,39 @@ export default class Solver {
     }
   }
 
+  /*
   init(): void {
-    CoordCube.Init();//¿´Ñù×ÓÏñ³õÊ¼»¯
+    CoordCube.Init();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
   }
-  //Ö÷º¯Êý
+  */
+ 
+  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
   solve(facelets: string): string {
+    CoordCube.Init();
     const valid = this.cc.deserialize(facelets);
-    if (!valid) {//ÑéÖ¤Ä§·½µÄºÏ·¨ÐÔ
+    if (!valid) {//ï¿½ï¿½Ö¤Ä§ï¿½ï¿½ï¿½ÄºÏ·ï¿½ï¿½ï¿½
       return "error: invalid cube";
     }
     const verify = this.cc.verify();
-    if (verify.length > 0) {//²»ºÏ·¨ÐÔ + Ô­Òò
+    if (verify.length > 0) {//ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ + Ô­ï¿½ï¿½
       return "error: " + verify;
     }
  
     this.sol = 22;
     this.moveSol = null;
-    this.initSearch();//³õÊ¼ËÑË÷½á¹û
-    const solution = this.search();//ºóÀ´µÄËÑË÷½á¹û
+    this.initSearch();//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    const solution = this.search();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     return solution;
   }
 
   private conjMask: number;
   private initSearch(): void {
-    this.conjMask = (Solver.TRY_INVERSE ? 0 : 0x38) | (Solver.TRY_THREE_AXES ? 0 : 0x36);//three axesÈýÎ¬×ø±ê 56 54 °´Î»È¡»ò
-    this.maxPreMoves = this.conjMask > 7 ? 0 : Solver.MAX_PRE_MOVES;//×î´ópre²½Öè
+    this.conjMask = (Solver.TRY_INVERSE ? 0 : 0x38) | (Solver.TRY_THREE_AXES ? 0 : 0x36);//three axesï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ 56 54 ï¿½ï¿½Î»È¡ï¿½ï¿½
+    this.maxPreMoves = this.conjMask > 7 ? 0 : Solver.MAX_PRE_MOVES;//ï¿½ï¿½ï¿½preï¿½ï¿½ï¿½ï¿½
 
     for (let i = 0; i < 6; i++) {
-      this.urfCubieCube[i].copy(this.cc);//copyµ±Ç°Ä§·½×´Ì¬
-      this.urfCoordCube[i].setWithPrun(this.urfCubieCube[i], 20);//Ä§·½×´Ì¬ºÍËÑË÷Éî¶È
+      this.urfCubieCube[i].copy(this.cc);//copyï¿½ï¿½Ç°Ä§ï¿½ï¿½×´Ì¬
+      this.urfCoordCube[i].setWithPrun(this.urfCubieCube[i], 20);//Ä§ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       this.cc.URFConjugate();
       if (i % 3 == 2) {
         this.cc.inverse();
@@ -99,18 +103,18 @@ export default class Solver {
   private search(): string {
     for (this.length1 = 0; this.length1 < this.sol; this.length1++) {
       for (this.urfIdx = 0; this.urfIdx < 6; this.urfIdx++) {
-        if ((this.conjMask & (1 << this.urfIdx)) != 0) {//1×óÒÆurfidxÎ»
+        if ((this.conjMask & (1 << this.urfIdx)) != 0) {//1ï¿½ï¿½ï¿½ï¿½urfidxÎ»
           continue;
         }
         if (this.phase1PreMoves(this.maxPreMoves, -30, this.urfCubieCube[this.urfIdx]) == 0) {
-          return this.moveSol == null ? "error: no solution for prob" : this.getSolution();//Ã»ÓÐ¿ÉÄÜ½â
+          return this.moveSol == null ? "error: no solution for prob" : this.getSolution();//Ã»ï¿½Ð¿ï¿½ï¿½Ü½ï¿½
         }
       }
     }
-    return this.moveSol == null ? "error: no solution for depth" : this.getSolution();//³¬¹ýÔ¤¶¨Éî¶È
+    return this.moveSol == null ? "error: no solution for depth" : this.getSolution();//ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½ï¿½ï¿½ï¿½
   }
 
-  private getSolution(): string {//²Ù×÷²½ÖèµÄÕ¹Ê¾
+  private getSolution(): string {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹Ê¾
     let ret = "";
     if (!this.moveSol) {
       return ret;
@@ -118,7 +122,7 @@ export default class Solver {
     const urf = this.urfIdx;
     if (urf < 3) {
       for (let s = 0; s < this.moveSol.length; ++s) {
-        ret += Util.MOVE2STR[CubieCube.URFMove[urf][this.moveSol[s]]] + " ";//Ä³¸ö²Ù×÷²½Öè
+        ret += Util.MOVE2STR[CubieCube.URFMove[urf][this.moveSol[s]]] + " ";//Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       }
     } else {
       for (let s = this.moveSol.length - 1; s >= 0; --s) {
@@ -128,7 +132,7 @@ export default class Solver {
     return ret;
   }
   private depth1 = 0;
-  //Ñ°ÕÒÓÐÃ»ÓÐ¿ÉÄÜ½â
+  //Ñ°ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð¿ï¿½ï¿½Ü½ï¿½
   private phase1PreMoves(maxl: number, lm: number, cc: CubieCube): number {
     this.preMoveLen = this.maxPreMoves - maxl;
     if (this.preMoveLen == 0 || ((0x36fb7 >> lm) & 1) == 0) {

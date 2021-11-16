@@ -3,6 +3,7 @@ import Cubelet from "./cubelet";
 import { GroupTable } from "./group";
 import { twister } from "./twister";
 import { cube_config } from "./utils";
+import { Face } from "./utils_internal";
 
 export default class Cube extends THREE.Group {
     dirty: boolean;
@@ -100,4 +101,87 @@ export default class Cube extends THREE.Group {
 
         this.callback();
     }
+
+    
+  //                +------------+
+  //                | U1  U2  U3 |
+  //                |            |
+  //                | U4  U5  U6 |
+  //                |            |
+  //                | U7  U8  U9 |
+  //   +------------+------------+------------+------------+
+  //   | L1  L2  L3 | F1  F2  F3 | R1  R2  R3 | B1  B2  B3 |
+  //   |            |            |            |            |
+  //   | L4  L5  L6 | F4  F5  F6 | R4  R5  R6 | B4  B5  B6 |
+  //   |            |            |            |            |
+  //   | L7  L8  L9 | F7  F8  F9 | R7  R8  R9 | B7  B8  B9 |
+  //   +------------+------------+------------+------------+
+  //                | D1  D2  D3 |
+  //                |            |
+  //                | D4  D5  D6 |
+  //                |            |
+  //                | D7  D8  D9 |
+  //                +------------+
+
+  serialize(): string {
+    const result: string[] = [];
+    let x, y, z;
+
+    twister.finish();
+    
+    y = 2;
+    for (z = 0; z < 3; z++) {
+      for (x = 0; x < 3; x++) {
+        const index = z * 3 * 3 + y * 3 + x;
+        const color = this.cubelets[index].getColorOf(Face.U);
+        result.push(color);
+      }
+    }
+
+    x = 2;
+    for (y = 2; y >= 0; y--) {
+      for (z = 2; z >= 0; z--) {
+        const index = z * 3 * 3 + y * 3 + x;
+        const color = this.cubelets[index].getColorOf(Face.R);
+        result.push(color);
+      }
+    }
+
+    z = 2;
+    for (y = 2; y >= 0; y--) {
+      for (x = 0; x < 3; x++) {
+        const index = z * 3 * 3 + y * 3 + x;
+        const color = this.cubelets[index].getColorOf(Face.F);
+        result.push(color);
+      }
+    }
+
+    y = 0;
+    for (z = 2; z >= 0; z--) {
+      for (x = 0; x < 3; x++) {
+        const index = z * 3 * 3 + y * 3 + x;
+        const color = this.cubelets[index].getColorOf(Face.D);
+        result.push(color);
+      }
+    }
+
+    x = 0;
+    for (y = 2; y >= 0; y--) {
+      for (z = 0; z < 3; z++) {
+        const index = z * 3 * 3 + y * 3 + x;
+        const color = this.cubelets[index].getColorOf(Face.L);
+        result.push(color);
+      }
+    }
+
+    z = 0;
+    for (y = 2; y >= 0; y--) {
+      for (x = 2; x >= 0; x--) {
+        const index = z * 3 * 3 + y * 3 + x;
+        const color = this.cubelets[index].getColorOf(Face.B);
+        result.push(color);
+      }
+    }
+    return result.join("");
+  }
 }

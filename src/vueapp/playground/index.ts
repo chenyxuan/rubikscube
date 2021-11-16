@@ -1,16 +1,15 @@
 import Vue from "vue";
-import { Component, Inject, Provide, Ref } from "vue-property-decorator";
+import { Component, Inject, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-
 import Solver from "../../solver/Solver";
 
 @Component({
     template: require("./index.html"),
     components: {
         viewport: Viewport,
-        setting: Setting
+        setting: Setting,
     },
 })
 
@@ -25,7 +24,11 @@ export default class Playground extends Vue {
     height: number = 0;
     size: number = 0;
 
-    isPlayerMode : boolean = false;
+    isPlayerMode: boolean = false;
+    isPlaying: boolean = false;
+    solver: Solver = new Solver();
+    solution: string[];
+    _progress: number;
 
     constructor() {
         super();
@@ -60,9 +63,41 @@ export default class Playground extends Vue {
 
     solve(): void {
         this.isPlayerMode = true;
+        const state = this.world.cube.serialize();
+        this.solution = this.solver.solve(state).split(' ').filter(Boolean);
+        this._progress = 0;
     }
 
-    quitplayer(): void {
+    @Watch("isPlayerMode")
+    onPlayingChange(): void {
+        this.world.controller.disable = this.isPlayerMode;
+    }
+
+    play(): void {
+
+    }
+
+    pause(): void {
+
+    }
+
+    quit(): void {
         this.isPlayerMode = false;
+    }
+
+    set progress(value: number) {
+        this._progress = value;
+    }
+
+    get progress(): number {
+        return this._progress;
+    }
+
+    thumb_label_prop(): string | boolean {
+        return this._progress !=0 ? 'always' : false;
+    }
+
+    thumb_label_slot(): string {
+        return this._progress == 0 ? '#' : this.solution[this._progress - 1];
     }
 }

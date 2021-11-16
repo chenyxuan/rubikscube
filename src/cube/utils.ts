@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Vector3 } from "three";
-import { Frame, Sticker } from "./utils_internal";
+import { Face, Frame, Sticker } from "./utils_internal";
 
 export const cube_config = {
   frames: 30,
@@ -123,3 +123,30 @@ export const worldToIndex = (point: Vector3): number => {
   vector.min(new Vector3().setScalar(2));
   return vector.x + vector.y * 3 + vector.z * 9;
 }
+
+export const facePostionBindings = [
+  {
+    face: Face.L,
+    position: new THREE.Vector3(-1, 0, 0)
+  },
+  {
+    face: Face.R,
+    position: new THREE.Vector3(1, 0, 0)
+  },
+  {
+    face: Face.D,
+    position: new THREE.Vector3(0, -1, 0)
+  },
+  {
+    face: Face.U,
+    position: new THREE.Vector3(0, 1, 0)
+  },
+  {
+    face: Face.B,
+    position: new THREE.Vector3(0, 0, -1)
+  },
+  {
+    face: Face.F,
+    position: new THREE.Vector3(0, 0, 1)
+  },
+];
