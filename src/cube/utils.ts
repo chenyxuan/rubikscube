@@ -150,3 +150,29 @@ export const facePostionBindings = [
     position: new THREE.Vector3(0, 0, 1)
   },
 ];
+
+export const stringToTwistParams : { [key: string]: { axis: string, layer : number, angle : number} } = {
+  "L" : { axis : 'x', layer : 0, angle : -Math.PI / 2},
+  "L'" : { axis : 'x', layer : 0, angle : Math.PI / 2},
+  "L2" : { axis : 'x', layer : 0, angle : -Math.PI},
+
+  "R" : { axis : 'x', layer : 2, angle : Math.PI / 2},
+  "R'" : { axis : 'x', layer : 2, angle : -Math.PI / 2},
+  "R2" : { axis : 'x', layer : 2, angle : Math.PI},
+  
+  "F" : { axis : 'z', layer : 2, angle : Math.PI / 2},
+  "F'" : { axis : 'z', layer : 2, angle : -Math.PI / 2},
+  "F2" : { axis : 'z', layer : 2, angle : Math.PI},
+  
+  "B" : { axis : 'z', layer : 0, angle : -Math.PI / 2},
+  "B'" : { axis : 'z', layer : 0, angle : Math.PI / 2},
+  "B2" : { axis : 'z', layer : 0, angle : -Math.PI},
+
+  "U" : { axis : 'y', layer : 2, angle : Math.PI / 2},
+  "U'" : { axis : 'y', layer : 2, angle : -Math.PI / 2},
+  "U2" : { axis : 'y', layer : 2, angle : Math.PI},
+
+  "D" : { axis : 'y', layer : 0, angle : -Math.PI / 2},
+  "D'" : { axis : 'y', layer : 0, angle : Math.PI / 2},
+  "D2" : { axis : 'y', layer : 0, angle : -Math.PI},
+}

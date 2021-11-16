@@ -4,6 +4,7 @@ import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
 import Solver from "../../solver/Solver";
+import { cube_config, stringToTwistParams } from "../../cube/utils";
 
 @Component({
     template: require("./index.html"),
@@ -65,7 +66,9 @@ export default class Playground extends Vue {
         this.isPlayerMode = true;
         const state = this.world.cube.serialize();
         this.solution = this.solver.solve(state).split(' ').filter(Boolean);
-        this._progress = 0;
+        console.log(this.solution);
+        this.progress = 0;
+        this.isPlaying = true;
     }
 
     @Watch("isPlayerMode")
@@ -74,11 +77,11 @@ export default class Playground extends Vue {
     }
 
     play(): void {
-
+        this.isPlaying = true;
     }
 
     pause(): void {
-
+        this.isPlaying = false;
     }
 
     quit(): void {
@@ -86,6 +89,18 @@ export default class Playground extends Vue {
     }
 
     set progress(value: number) {
+        this.isPlaying = false;
+
+        for(let i = this._progress; i < value; i++) {
+            const params = stringToTwistParams[this.solution[i]];
+            this.world.cube.table.groups[params.axis][params.layer].twist(params.angle, true);
+        }
+
+        for(let i = this._progress; i > value; i--) {
+            const params = stringToTwistParams[this.solution[i - 1]];
+            this.world.cube.table.groups[params.axis][params.layer].twist(params.angle * -1, true);
+        }
+
         this._progress = value;
     }
 
