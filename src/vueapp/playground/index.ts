@@ -5,6 +5,7 @@ import World from "../../cube/world";
 import Setting from "../setting";
 import Solver from "../../solver/Solver";
 import { cube_config, stringToTwistParams } from "../../cube/utils";
+import { twister } from "../../cube/twister";
 
 @Component({
     template: require("./index.html"),
@@ -43,6 +44,7 @@ export default class Playground extends Vue {
     loop(): void {
         requestAnimationFrame(this.loop.bind(this));
         this.viewport.draw();
+        this.callback();
     }
 
     resize(): void {
@@ -66,14 +68,30 @@ export default class Playground extends Vue {
         this.isPlayerMode = true;
         const state = this.world.cube.serialize();
         this.solution = this.solver.solve(state).split(' ').filter(Boolean);
+        this.solution.push("~");
         console.log(this.solution);
         this.progress = 0;
         this.isPlaying = true;
     }
 
     @Watch("isPlayerMode")
-    onPlayingChange(): void {
+    onPlayerModeChange(): void {
         this.world.controller.disable = this.isPlayerMode;
+    }
+
+    callback(): void {
+        if(this.isPlayerMode && this.isPlaying) {
+            if(this._progress == this.solution.length) {
+                this.isPlaying = false;
+            }
+            if(this._progress < this.solution.length) {
+                if(!twister.isTwisting()) {
+                    const params = stringToTwistParams[this.solution[this._progress]];
+                    this.world.cube.table.groups[params.axis][params.layer].twist(params.angle, false);
+                    this._progress++;
+                }
+            }
+        }
     }
 
     play(): void {
@@ -91,14 +109,10 @@ export default class Playground extends Vue {
     set progress(value: number) {
         this.isPlaying = false;
 
-        for(let i = this._progress; i < value; i++) {
+        this.world.cube.restore();
+        for(let i = 0; i < value; i++) {
             const params = stringToTwistParams[this.solution[i]];
             this.world.cube.table.groups[params.axis][params.layer].twist(params.angle, true);
-        }
-
-        for(let i = this._progress; i > value; i--) {
-            const params = stringToTwistParams[this.solution[i - 1]];
-            this.world.cube.table.groups[params.axis][params.layer].twist(params.angle * -1, true);
         }
 
         this._progress = value;
@@ -106,9 +120,5 @@ export default class Playground extends Vue {
 
     get progress(): number {
         return this._progress;
-    }
-
-    thumb_label_slot(): string {
-        return this._progress == 0 ? '#' : this.solution[this._progress - 1];
     }
 }

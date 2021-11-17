@@ -87,6 +87,10 @@ export class Twister {
             }
         }
     }
+
+    isTwisting():boolean {
+        return this.twists.length != 0;
+    }
 }
 
 export const twister = new Twister();

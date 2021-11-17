@@ -2,7 +2,7 @@ import * as THREE from "three"
 import Cubelet from "./cubelet";
 import { GroupTable } from "./group";
 import { twister } from "./twister";
-import { cube_config } from "./utils";
+import { cubelet_face_attrs, cubelet_lambers, cubelet_sticker, cube_config } from "./utils";
 import { Face } from "./utils_internal";
 
 export default class Cube extends THREE.Group {
@@ -11,6 +11,7 @@ export default class Cube extends THREE.Group {
     cubelets: Cubelet[] = [];
     table: GroupTable;
     callbacks: (() => void)[] = [];
+    serialized_state: string[];
 
     constructor() {
         super();
@@ -182,6 +183,139 @@ export default class Cube extends THREE.Group {
         result.push(color);
       }
     }
+
+    this.serialized_state = result;
     return result.join("");
+  }
+
+  restore(): void {
+    const state = this.serialized_state;
+    let x, y, z;
+    let cur = 0;
+    let face;
+
+    this.reset();
+    
+    y = 2;
+    face = Face.U;
+    for (z = 0; z < 3; z++) {
+      for (x = 0; x < 3; x++) {
+        const index = z * 3 * 3 + y * 3 + x;
+
+        const color = state[cur++];
+        const face_attr = cubelet_face_attrs[face];
+        const cubelet = this.cubelets[index];
+        const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
+
+        cubelet.remove(cubelet.stickers[face]);
+        
+        sticker.rotation.setFromVector3(face_attr.rotation);
+        sticker.position.copy(face_attr.position);
+        cubelet.stickers[face] = sticker;
+        cubelet.add(sticker);
+      }
+    }
+
+    x = 2;
+    face = Face.R;
+    for (y = 2; y >= 0; y--) {
+      for (z = 2; z >= 0; z--) {
+        const index = z * 3 * 3 + y * 3 + x;
+
+        const color = state[cur++];
+        const face_attr = cubelet_face_attrs[face];
+        const cubelet = this.cubelets[index];
+        const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
+
+        cubelet.remove(cubelet.stickers[face]);
+        
+        sticker.rotation.setFromVector3(face_attr.rotation);
+        sticker.position.copy(face_attr.position);
+        cubelet.stickers[face] = sticker;
+        cubelet.add(sticker);
+      }
+    }
+
+    z = 2;
+    face = Face.F;
+    for (y = 2; y >= 0; y--) {
+      for (x = 0; x < 3; x++) {
+        const index = z * 3 * 3 + y * 3 + x;
+
+        const color = state[cur++];
+        const face_attr = cubelet_face_attrs[face];
+        const cubelet = this.cubelets[index];
+        const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
+
+        cubelet.remove(cubelet.stickers[face]);
+        
+        sticker.rotation.setFromVector3(face_attr.rotation);
+        sticker.position.copy(face_attr.position);
+        cubelet.stickers[face] = sticker;
+        cubelet.add(sticker);
+      }
+    }
+
+    y = 0;
+    face = Face.D;
+    for (z = 2; z >= 0; z--) {
+      for (x = 0; x < 3; x++) {
+        const index = z * 3 * 3 + y * 3 + x;
+
+        const color = state[cur++];
+        const face_attr = cubelet_face_attrs[face];
+        const cubelet = this.cubelets[index];
+        const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
+
+        cubelet.remove(cubelet.stickers[face]);
+        
+        sticker.rotation.setFromVector3(face_attr.rotation);
+        sticker.position.copy(face_attr.position);
+        cubelet.stickers[face] = sticker;
+        cubelet.add(sticker);
+      }
+    }
+
+    x = 0;
+    face = Face.L;
+    for (y = 2; y >= 0; y--) {
+      for (z = 0; z < 3; z++) {
+        const index = z * 3 * 3 + y * 3 + x;
+
+        const color = state[cur++];
+        const face_attr = cubelet_face_attrs[face];
+        const cubelet = this.cubelets[index];
+        const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
+
+        cubelet.remove(cubelet.stickers[face]);
+        
+        sticker.rotation.setFromVector3(face_attr.rotation);
+        sticker.position.copy(face_attr.position);
+        cubelet.stickers[face] = sticker;
+        cubelet.add(sticker);
+      }
+    }
+
+    z = 0;
+    face = Face.B;
+    for (y = 2; y >= 0; y--) {
+      for (x = 2; x >= 0; x--) {
+        const index = z * 3 * 3 + y * 3 + x;
+
+        const color = state[cur++];
+        const face_attr = cubelet_face_attrs[face];
+        const cubelet = this.cubelets[index];
+        const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
+
+        cubelet.remove(cubelet.stickers[face]);
+        
+        sticker.rotation.setFromVector3(face_attr.rotation);
+        sticker.position.copy(face_attr.position);
+        cubelet.stickers[face] = sticker;
+        cubelet.add(sticker);
+      }
+    }
+
+    this.dirty = true;
   }
 }

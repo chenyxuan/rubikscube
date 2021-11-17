@@ -19,8 +19,6 @@ export default class World {
 
   scale: number;
   perspective: number;
-  
-  callbacks: (()=>void)[] = [];
 
   set dirty(value: boolean) {
     this.cube.dirty = value;
@@ -55,12 +53,6 @@ export default class World {
     this.perspective = 9;
 
   }
-  
-  callback = (): void => {
-    for (const callback of this.callbacks) {
-      callback();
-    }
-  };
   
   resize(width: number, height: number): void {
     this.width = width;

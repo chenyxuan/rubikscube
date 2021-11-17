@@ -175,4 +175,6 @@ export const stringToTwistParams : { [key: string]: { axis: string, layer : numb
   "D" : { axis : 'y', layer : 0, angle : -Math.PI / 2},
   "D'" : { axis : 'y', layer : 0, angle : Math.PI / 2},
   "D2" : { axis : 'y', layer : 0, angle : -Math.PI},
+
+  "~" : { axis : 'x', layer : 0, angle : 0}
 }

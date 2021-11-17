@@ -8,8 +8,6 @@ export default class Cubelet extends THREE.Group {
   _vector: THREE.Vector3;
   index: number;
 
-  lamberts: (THREE.MeshLambertMaterial | undefined)[];
-
   frame: THREE.Mesh;
   stickers: THREE.Mesh[];
 
@@ -35,13 +33,11 @@ export default class Cubelet extends THREE.Group {
     this.frame = new THREE.Mesh(cubelet_frame, cubelet_core);
     this.add(this.frame);
 
-    this.lamberts = new Array(6);
     this.stickers = new Array(6);
     for (let i = 0; i < 6; i++) {
       const face_attr = cubelet_face_attrs[i];
       if (face_attr.match(this.vector)) {
-        this.lamberts[i] = face_attr.lambert;
-        const sticker = new THREE.Mesh(cubelet_sticker, this.lamberts[i]);
+        const sticker = new THREE.Mesh(cubelet_sticker, face_attr.lambert);
         sticker.rotation.setFromVector3(face_attr.rotation);
         sticker.position.copy(face_attr.position);
         this.stickers[i] = sticker;
@@ -74,6 +70,7 @@ export default class Cubelet extends THREE.Group {
     }
     return -1;
   }
+
   getColorOf(face: Face): string {
     const sticker = this.stickers[this.convertFace(face)];
     switch (sticker.material) {
