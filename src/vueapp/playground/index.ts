@@ -96,7 +96,11 @@ export default class Playground extends Vue {
     }
 
     play(): void {
-        this.isPlaying = true;
+        if(this.progress == this.solution.length) {
+            this.progress = 0;
+        } else {
+            this.isPlaying = true;
+        }
     }
 
     pause(): void {
