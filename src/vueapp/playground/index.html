@@ -49,13 +49,14 @@
                             'height': size + 'px'
                         }">
                         <v-slider
-                            v-model="progress"
+                            :value="progress"
                             style="margin: 0%; padding: 0%;"
                             :max="solution.length" 
                             :tick-size="3"
                             thumb-label="always"
                             ticks="always"
                             hide-details
+                            v-on:input="set_progress"
                         >
                             <template v-slot:thumb-label>
                                 {{ progress == 0 ? '#' : solution[progress - 1] }}

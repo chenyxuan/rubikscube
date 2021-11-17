@@ -26,11 +26,12 @@ export default class Playground extends Vue {
     height: number = 0;
     size: number = 0;
 
+    solution: string[] = [];
+    progress: number = 0;
     isPlayerMode: boolean = false;
     isPlaying: boolean = false;
     solver: Solver = new Solver();
-    solution: string[];
-    _progress: number;
+    key: number = 0;
 
     constructor() {
         super();
@@ -81,14 +82,14 @@ export default class Playground extends Vue {
 
     callback(): void {
         if(this.isPlayerMode && this.isPlaying) {
-            if(this._progress == this.solution.length) {
+            if(this.progress == this.solution.length) {
                 this.isPlaying = false;
             }
-            if(this._progress < this.solution.length) {
+            if(this.progress < this.solution.length) {
                 if(!twister.isTwisting()) {
-                    const params = stringToTwistParams[this.solution[this._progress]];
+                    const params = stringToTwistParams[this.solution[this.progress]];
                     this.world.cube.table.groups[params.axis][params.layer].twist(params.angle, false);
-                    this._progress++;
+                    this.progress++;
                 }
             }
         }
@@ -106,7 +107,7 @@ export default class Playground extends Vue {
         this.isPlayerMode = false;
     }
 
-    set progress(value: number) {
+   set_progress(value: number) {
         this.isPlaying = false;
 
         this.world.cube.restore();
@@ -115,10 +116,6 @@ export default class Playground extends Vue {
             this.world.cube.table.groups[params.axis][params.layer].twist(params.angle, true);
         }
 
-        this._progress = value;
-    }
-
-    get progress(): number {
-        return this._progress;
+        this.progress = value;
     }
 }
