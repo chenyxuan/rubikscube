@@ -5,7 +5,7 @@ import World from "../../cube/world";
 import Setting from "../setting";
 import Solver from "../../solver/Solver";
 import { cube_config, stringToTwistParams } from "../../cube/utils";
-import { twister } from "../../cube/twister";
+import { Twist, twister } from "../../cube/twister";
 
 @Component({
     template: require("./index.html"),
@@ -97,10 +97,12 @@ export default class Playground extends Vue {
 
     play(): void {
         if(this.progress == this.solution.length) {
-            this.progress = 0;
-        } else {
-            this.isPlaying = true;
+            this.set_progress(0);
+            twister.twists.push(new Twist(0, Math.PI ,cube_config.frames * 1.5, (value: number) => {
+                return Math.abs(value - Math.PI) < 1e-6;
+            }));
         }
+        this.isPlaying = true;
     }
 
     pause(): void {
