@@ -87,8 +87,8 @@ export default class Playground extends Vue {
             .split(' ').
             filter(Boolean);
         this.solution.push("~");
-        console.log(this.initState);
-        console.log(this.solution);
+        console.log(this.initState.join(""));
+        console.log(this.solution.join(" "));
         this.setProgress(0);
         this.idle(0.5);
         this.isPlaying = true;
