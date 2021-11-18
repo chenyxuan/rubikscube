@@ -4,7 +4,7 @@ import { Face, Frame, Sticker } from "./utils_internal";
 
 export const cube_config = {
   frames: 30,
-  sensibility: 20 * 1e-4,
+  sensibility: 25 * 1e-4,
   scramble_steps: 20,
 }
 
