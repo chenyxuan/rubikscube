@@ -11,7 +11,6 @@ export default class Cube extends THREE.Group {
     cubelets: Cubelet[] = [];
     table: GroupTable;
     callbacks: (() => void)[] = [];
-    serialized_state: string[];
 
     constructor() {
         super();
@@ -124,7 +123,7 @@ export default class Cube extends THREE.Group {
   //                | D7  D8  D9 |
   //                +------------+
 
-  serialize(): string {
+  serialize(): string[] {
     const result: string[] = [];
     let x, y, z;
 
@@ -184,12 +183,10 @@ export default class Cube extends THREE.Group {
       }
     }
 
-    this.serialized_state = result;
-    return result.join("");
+    return result;
   }
 
-  restore(): void {
-    const state = this.serialized_state;
+  restore(state : string[]): void {
     let x, y, z;
     let cur = 0;
     let face;

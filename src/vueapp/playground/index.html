@@ -56,7 +56,7 @@
                             thumb-label="always"
                             ticks="always"
                             hide-details
-                            v-on:input="set_progress"
+                            v-on:input="setProgress"
                         >
                             <template v-slot:thumb-label>
                                 {{ progress == 0 ? '#' : solution[progress - 1] }}

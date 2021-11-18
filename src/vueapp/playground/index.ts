@@ -1,9 +1,9 @@
 import Vue from "vue";
-import { Component, Inject, Provide, Ref, Watch } from "vue-property-decorator";
+import { Component, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-import { cubelet_frame, cube_config, stringToTwistParams } from "../../cube/utils";
+import { cube_config, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 
 @Component({
@@ -30,6 +30,7 @@ export default class Playground extends Vue {
     isPlayerMode: boolean = false;
     isPlaying: boolean = false;
     key: number = 0;
+    initState: string[] = [];
 
     Cube = require('cubejs');
 
@@ -79,12 +80,16 @@ export default class Playground extends Vue {
         }
 
         this.isPlayerMode = true;
-        const state = this.world.cube.serialize();
-        const cube = this.Cube.fromString(state);
-        this.solution = cube.solve().split(' ').filter(Boolean);
+        this.initState = this.world.cube.serialize();
+        this.solution = this.Cube
+            .fromString(this.initState)
+            .solve()
+            .split(' ').
+            filter(Boolean);
         this.solution.push("~");
+        console.log(this.initState);
         console.log(this.solution);
-        this.set_progress(0);
+        this.setProgress(0);
         this.idle(0.5);
         this.isPlaying = true;
 
@@ -116,7 +121,7 @@ export default class Playground extends Vue {
                 }
             }
         }
-        
+
         if (this.elapsedframes < cube_config.frames) {
             this.elapsedframes++;
         }
@@ -124,7 +129,7 @@ export default class Playground extends Vue {
 
     play(): void {
         if (this.progress == this.solution.length) {
-            this.set_progress(0);
+            this.setProgress(0);
             this.idle(1.5);
         }
         this.isPlaying = true;
@@ -144,10 +149,10 @@ export default class Playground extends Vue {
         this.elapsedframes = 0;
     }
 
-    set_progress(value: number) {
+    setProgress(value: number) {
         this.isPlaying = false;
 
-        this.world.cube.restore();
+        this.world.cube.restore(this.initState);
         for (let i = 0; i < value; i++) {
             const params = stringToTwistParams[this.solution[i]];
             for (const layer of params.layers) {
