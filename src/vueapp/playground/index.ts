@@ -3,7 +3,7 @@ import { Component, Inject, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-import { cube_config, stringToTwistParams } from "../../cube/utils";
+import { cubelet_frame, cube_config, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 
 @Component({
@@ -32,6 +32,8 @@ export default class Playground extends Vue {
     key: number = 0;
 
     Cube = require('cubejs');
+
+    elapsedframes: number = 0;
 
     constructor() {
         super();
@@ -72,6 +74,10 @@ export default class Playground extends Vue {
         }));
     }
     solve(): void {
+        if (this.elapsedframes < cube_config.frames) {
+            return;
+        }
+
         this.isPlayerMode = true;
         const state = this.world.cube.serialize();
         const cube = this.Cube.fromString(state);
@@ -81,6 +87,8 @@ export default class Playground extends Vue {
         this.set_progress(0);
         this.idle(0.5);
         this.isPlaying = true;
+
+        this.elapsedframes = 0;
     }
 
     @Watch("isPlayerMode")
@@ -108,6 +116,10 @@ export default class Playground extends Vue {
                 }
             }
         }
+        
+        if (this.elapsedframes < cube_config.frames) {
+            this.elapsedframes++;
+        }
     }
 
     play(): void {
@@ -123,7 +135,13 @@ export default class Playground extends Vue {
     }
 
     quit(): void {
+        if (this.elapsedframes < cube_config.frames) {
+            return;
+        }
+
         this.isPlayerMode = false;
+
+        this.elapsedframes = 0;
     }
 
     set_progress(value: number) {
