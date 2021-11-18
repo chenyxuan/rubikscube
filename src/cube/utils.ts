@@ -151,30 +151,78 @@ export const facePostionBindings = [
   },
 ];
 
-export const stringToTwistParams : { [key: string]: { axis: string, layer : number, angle : number} } = {
-  "L" : { axis : 'x', layer : 0, angle : -Math.PI / 2},
-  "L'" : { axis : 'x', layer : 0, angle : Math.PI / 2},
-  "L2" : { axis : 'x', layer : 0, angle : -Math.PI},
+export const stringToTwistParams : { [key: string]: { axis: string, layers : number[], angle : number} } = {
+  "L" : { axis : 'x', layers : [0], angle : -Math.PI / 2},
+  "L'" : { axis : 'x', layers : [0], angle : Math.PI / 2},
+  "L2" : { axis : 'x', layers : [0], angle : -Math.PI},
 
-  "R" : { axis : 'x', layer : 2, angle : Math.PI / 2},
-  "R'" : { axis : 'x', layer : 2, angle : -Math.PI / 2},
-  "R2" : { axis : 'x', layer : 2, angle : Math.PI},
+  "R" : { axis : 'x', layers : [2], angle : Math.PI / 2},
+  "R'" : { axis : 'x', layers : [2], angle : -Math.PI / 2},
+  "R2" : { axis : 'x', layers : [2], angle : Math.PI},
   
-  "F" : { axis : 'z', layer : 2, angle : Math.PI / 2},
-  "F'" : { axis : 'z', layer : 2, angle : -Math.PI / 2},
-  "F2" : { axis : 'z', layer : 2, angle : Math.PI},
+  "F" : { axis : 'z', layers : [2], angle : Math.PI / 2},
+  "F'" : { axis : 'z', layers : [2], angle : -Math.PI / 2},
+  "F2" : { axis : 'z', layers : [2], angle : Math.PI},
   
-  "B" : { axis : 'z', layer : 0, angle : -Math.PI / 2},
-  "B'" : { axis : 'z', layer : 0, angle : Math.PI / 2},
-  "B2" : { axis : 'z', layer : 0, angle : -Math.PI},
+  "B" : { axis : 'z', layers : [0], angle : -Math.PI / 2},
+  "B'" : { axis : 'z', layers : [0], angle : Math.PI / 2},
+  "B2" : { axis : 'z', layers : [0], angle : -Math.PI},
 
-  "U" : { axis : 'y', layer : 2, angle : Math.PI / 2},
-  "U'" : { axis : 'y', layer : 2, angle : -Math.PI / 2},
-  "U2" : { axis : 'y', layer : 2, angle : Math.PI},
+  "U" : { axis : 'y', layers : [2], angle : Math.PI / 2},
+  "U'" : { axis : 'y', layers : [2], angle : -Math.PI / 2},
+  "U2" : { axis : 'y', layers : [2], angle : Math.PI},
 
-  "D" : { axis : 'y', layer : 0, angle : -Math.PI / 2},
-  "D'" : { axis : 'y', layer : 0, angle : Math.PI / 2},
-  "D2" : { axis : 'y', layer : 0, angle : -Math.PI},
+  "D" : { axis : 'y', layers : [0], angle : -Math.PI / 2},
+  "D'" : { axis : 'y', layers : [0], angle : Math.PI / 2},
+  "D2" : { axis : 'y', layers : [0], angle : -Math.PI},
 
-  "~" : { axis : 'x', layer : 0, angle : 0}
+  "~" : { axis : 'a', layers : [], angle : 0},
+
+  "x" : { axis : 'x', layers : [0, 1, 2], angle : Math.PI / 2},
+  "x'" : { axis : 'x', layers : [0, 1, 2], angle : -Math.PI / 2},
+  "x2" : { axis : 'x', layers : [0, 1, 2], angle : Math.PI},
+
+  "y" : { axis : 'y', layers : [0, 1, 2], angle : Math.PI / 2},
+  "y'" : { axis : 'y', layers : [0, 1, 2], angle : -Math.PI / 2},
+  "y2" : { axis : 'y', layers : [0, 1, 2], angle : Math.PI},
+
+  "z" : { axis : 'z', layers : [0, 1, 2], angle : Math.PI / 2},
+  "z'" : { axis : 'z', layers : [0, 1, 2], angle : -Math.PI / 2},
+  "z2" : { axis : 'z', layers : [0, 1, 2], angle : Math.PI},
+
+  "l" : { axis : 'x', layers : [0, 1], angle : -Math.PI / 2},
+  "l'" : { axis : 'x', layers : [0, 1], angle : Math.PI / 2},
+  "l2" : { axis : 'x', layers : [0, 1], angle : -Math.PI},
+
+  "r" : { axis : 'x', layers : [2, 1], angle : Math.PI / 2},
+  "r'" : { axis : 'x', layers : [2, 1], angle : -Math.PI / 2},
+  "r2" : { axis : 'x', layers : [2, 1], angle : Math.PI},
+  
+  "f" : { axis : 'z', layers : [2, 1], angle : Math.PI / 2},
+  "f'" : { axis : 'z', layers : [2, 1], angle : -Math.PI / 2},
+  "f2" : { axis : 'z', layers : [2, 1], angle : Math.PI},
+  
+  "b" : { axis : 'z', layers : [0, 1], angle : -Math.PI / 2},
+  "b'" : { axis : 'z', layers : [0, 1], angle : Math.PI / 2},
+  "b2" : { axis : 'z', layers : [0, 1], angle : -Math.PI},
+
+  "u" : { axis : 'y', layers : [2, 1], angle : Math.PI / 2},
+  "u'" : { axis : 'y', layers : [2, 1], angle : -Math.PI / 2},
+  "u2" : { axis : 'y', layers : [2, 1], angle : Math.PI},
+
+  "d" : { axis : 'y', layers : [0, 1], angle : -Math.PI / 2},
+  "d'" : { axis : 'y', layers : [0, 1], angle : Math.PI / 2},
+  "d2" : { axis : 'y', layers : [0, 1], angle : -Math.PI},
+
+  "E" : { axis : 'y', layers : [1], angle : -Math.PI / 2},
+  "E'" : { axis : 'y', layers : [1], angle : Math.PI / 2},
+  "E2" : { axis : 'y', layers : [1], angle : -Math.PI},
+
+  "M" : { axis : 'x', layers : [1], angle : -Math.PI / 2},
+  "M'" : { axis : 'x', layers : [1], angle : Math.PI / 2},
+  "M2" : { axis : 'x', layers : [1], angle : -Math.PI},
+
+  "S" : { axis : 'z', layers : [1], angle : Math.PI / 2},
+  "S'" : { axis : 'z', layers : [1], angle : -Math.PI / 2},
+  "S2" : { axis : 'z', layers : [1], angle : Math.PI},
 }
