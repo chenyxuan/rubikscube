@@ -144,6 +144,7 @@ export default class Playground extends Vue {
             return;
         }
 
+        this.isPlaying = false;
         this.isPlayerMode = false;
 
         this.elapsedframes = 0;
