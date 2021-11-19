@@ -1,5 +1,8 @@
 <v-app>
     <div v-resize="resize" style="user-select: none; touch-action: none;">
+        <v-flex xs12 :style="{
+                'height':size + 'px'
+            }" id="top-flex"></v-flex>
         <setting ref="setting"></setting>
         <viewport ref="viewport"></viewport>
         <v-card flat style="margin: 0%; touch-action: none; user-select: none;">
@@ -8,12 +11,8 @@
 
                 <v-layout row wrap v-if="!isPlayerMode">
                     <v-flex xs12 :style="{
-                            'padding-left': size / 2 + 'px',
-                            'padding-right': size / 2 + 'px',
-                            'padding-top': size * 0.2 + 'px',
-                            'font-size': size * 0.3 + 'px',
                             'height':size + 'px'
-                        }" id="flex">
+                        }" id="bottom-flex">
                     </v-flex>
                     <v-flex xs4 :style="{padding: size * 0.06 + 'px'}">
                         <v-btn @click="scramble" block text :ripple="false" color="green"
@@ -42,10 +41,6 @@
                 </v-layout>
                 <v-layout row wrap v-else>
                     <v-flex xs12 :style="{
-                            'padding-left': size / 2 + 'px',
-                            'padding-right': size / 2 + 'px',
-                            'padding-top': size * 0.2 + 'px',
-                            'font-size': size * 0.3 + 'px',
                             'height': size + 'px'
                         }">
                         <v-slider :value="progress" style="margin: 0%; padding: 0%;" :max="solution.length"

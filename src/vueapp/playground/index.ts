@@ -36,7 +36,7 @@ export default class Playground extends Vue {
     Cube = require('cubejs');
 
     elapsedframes: number = 0;
-    interactor: Interactor;
+    interactors: Interactor[] = [];
 
     constructor() {
         super();
@@ -58,8 +58,9 @@ export default class Playground extends Vue {
         this.width = document.documentElement.clientWidth;
         this.height = document.documentElement.clientHeight;
         this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
-        this.viewport.resize(this.width, this.height - this.size * 2.5);
-        this.interactor = new Interactor(document.getElementById("flex"), this.world.controller.interact);
+        this.viewport.resize(this.width, this.height - this.size * 3.5);
+        this.interactors.push(new Interactor(document.getElementById("top-flex"), this.world.controller.interact));
+        this.interactors.push(new Interactor(document.getElementById("bottom-flex"), this.world.controller.interact));
         this.world.cube.dirty = true;
     }
 

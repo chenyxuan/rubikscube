@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Vector3 } from "three";
 import Controller from "./controller";
 import Cube from "./cube";
 import { cubelet_defs } from "./utils";
@@ -63,14 +64,14 @@ export default class World {
   updateCamera(): void {
     const min = this.height / Math.min(this.width, this.height) / this.scale / this.perspective;
     const fov = (2 * Math.atan(min) * 180) / Math.PI;
-    const distance = cubelet_defs.size * 3 * this.perspective;
+    const distance = cubelet_defs.size * 3 * this.perspective * 0.9;
 
     this.camera.aspect = this.width / this.height;
     this.camera.fov = fov;
     this.camera.position.z = distance;
     this.camera.near = distance - cubelet_defs.size * 3;
     this.camera.far = distance + cubelet_defs.size * 8;
-    this.camera.lookAt(this.scene.position);
+    this.camera.lookAt(new Vector3(0, 0, 30));
     this.camera.updateProjectionMatrix();
   }
 }
