@@ -45,8 +45,8 @@ export default class Playground extends Vue {
     mounted(): void {
         this.Cube.initSolver();
         this.interactor = new Interactor([
-            document.getElementById("top-flex"),
             this.viewport.canvasElem,
+            document.getElementById("top-flex"),
             document.getElementById("bottom-flex")
         ], this.world.controller.interact);
         this.$nextTick(this.resize);
