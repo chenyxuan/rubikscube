@@ -5,13 +5,15 @@
             }" id="top-flex"></v-flex>
         <setting ref="setting"></setting>
         <viewport ref="viewport"></viewport>
-        <v-card flat style="margin: 0%; touch-action: none; user-select: none;">
+        <v-card flat style="margin: 0%; padding: none; touch-action: none; user-select: none;">
             <v-container fluid grid-list-md text-xs-center
-                :style="{width: Math.min(size * 8, width) + 'px', height: size * 4 + 'px'}">
+                :style="{width: Math.min(size * 8, width) + 'px', height: size * 4 + 'px', padding : 0 + 'px'}">
 
                 <v-layout row wrap v-if="!isPlayerMode">
                     <v-flex xs12 :style="{
-                            'height':size + 'px'
+                            'height':size + 'px',
+                            'padding': 0 + 'px',
+                            'margin': 0 + 'px'
                         }" id="bottom-flex">
                     </v-flex>
                     <v-flex xs4 :style="{padding: size * 0.06 + 'px'}">
