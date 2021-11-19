@@ -61,7 +61,10 @@ export default class Interactor {
         if (this.notin()) {
             return true;
         }
-        const action = new Interaction(event.type, event.clientX, event.clientY);
+        const action = new Interaction(
+            event.type, 
+            event.clientX - this.doms[0].getBoundingClientRect().left, 
+            event.clientY - this.doms[0].getBoundingClientRect().top);
         this.callback(action);
         if (event.type === "mouseup") {
             this.target = null;

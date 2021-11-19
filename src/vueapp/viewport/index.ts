@@ -1,7 +1,6 @@
 import Vue from "vue";
 import { Component, Inject, Ref } from "vue-property-decorator";
 import * as THREE from "three";
-import Interactor from "../../cube/interactor";
 import World from "../../cube/world";
 
 @Component({
@@ -17,8 +16,6 @@ export default class Viewport extends Vue {
     canvas: HTMLElement;
 
     renderer: THREE.WebGLRenderer;
-
-    interactor: Interactor;
 
     canvasElem : HTMLElement;
 
