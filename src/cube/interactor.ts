@@ -31,8 +31,8 @@ export default class Interactor {
             if (this.last) {
                 const action = new Interaction(
                     "touchend",
-                    this.last.clientX,
-                    this.last.clientY
+                    this.last.clientX - this.doms[0].getBoundingClientRect().left,
+                    this.last.clientY - this.doms[0].getBoundingClientRect().top
                 );
                 this.callback(action);
             }
@@ -43,8 +43,8 @@ export default class Interactor {
         }
         const action = new Interaction(
             event.type,
-            first.clientX,
-            first.clientY
+            first.clientX - this.doms[0].getBoundingClientRect().left,
+            first.clientY - this.doms[0].getBoundingClientRect().top
         );
         this.callback(action);
         event.preventDefault();
