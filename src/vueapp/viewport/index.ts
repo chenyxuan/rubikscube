@@ -20,6 +20,8 @@ export default class Viewport extends Vue {
 
     interactor: Interactor;
 
+    canvasElem : HTMLElement;
+
     constructor() {
         super();
         const canvasElem = document.createElement("canvas");
@@ -32,7 +34,7 @@ export default class Viewport extends Vue {
         this.renderer.autoClear = false;
         this.renderer.setClearColor(0, 0);
         this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.interactor = new Interactor(canvasElem, this.world.controller.interact);
+        this.canvasElem = canvasElem;
     }
 
     resize(width: number, height: number): void {

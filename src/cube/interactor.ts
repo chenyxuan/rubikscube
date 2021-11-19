@@ -10,10 +10,19 @@ export class Interaction {
 }
 
 export default class Interactor {
-    dom: HTMLElement;
+    doms: HTMLElement[] = [];
     callback: (action: Interaction) => void;
     target: EventTarget | null;
     last: Touch | null;
+
+    notin(): boolean {
+        for(const dom of this.doms) {
+            if(this.target === dom) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     touch = (event: TouchEvent): boolean => {
         const first = event.changedTouches[0];
@@ -22,21 +31,20 @@ export default class Interactor {
             if (this.last) {
                 const action = new Interaction(
                     "touchend",
-                    this.last.clientX - this.dom.getBoundingClientRect().left,
-                    this.last.clientY - this.dom.getBoundingClientRect().top
+                    this.last.clientX,
+                    this.last.clientY
                 );
                 this.callback(action);
             }
             this.last = first;
         }
-        if (this.target !== this.dom || this.last?.identifier != first.identifier) {
+        if (this.notin() || this.last?.identifier != first.identifier) {
             return false;
         }
-        this.dom.focus();
         const action = new Interaction(
             event.type,
-            first.clientX - this.dom.getBoundingClientRect().left,
-            first.clientY - this.dom.getBoundingClientRect().top
+            first.clientX,
+            first.clientY
         );
         this.callback(action);
         event.preventDefault();
@@ -50,10 +58,9 @@ export default class Interactor {
         if (event.type === "mousedown") {
             this.target = event.target;
         }
-        if (this.target !== this.dom) {
+        if (this.notin()) {
             return true;
         }
-        this.dom.focus();
         const action = new Interaction(event.type, event.clientX, event.clientY);
         this.callback(action);
         if (event.type === "mouseup") {
@@ -62,9 +69,12 @@ export default class Interactor {
         return false;
     };
 
-    constructor(dom: HTMLElement | null, callback: (action: Interaction) => void) {
-        if(dom == null) return;
-        this.dom = dom;
+    constructor(doms: (HTMLElement | null)[], callback: (action: Interaction) => void) {
+        for(const dom of doms) {
+            if(dom) {
+                this.doms.push(dom);
+            }
+        }
         this.callback = callback;
         document.addEventListener("touchstart", this.touch);
         document.addEventListener("touchmove", this.touch);
