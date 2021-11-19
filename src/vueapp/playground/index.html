@@ -2,7 +2,7 @@
     <div v-resize="resize" style="user-select: none; touch-action: none;">
         <setting ref="setting"></setting>
         <viewport ref="viewport"></viewport>
-        <v-card flat style="margin: auto; touch-action: none; user-select: none;">
+        <v-card flat style="margin: 0%; touch-action: none; user-select: none;">
             <v-container fluid grid-list-md text-xs-center
                 :style="{width: Math.min(size * 10, width) + 'px', height: size * 4 + 'px'}">
 
@@ -13,7 +13,7 @@
                             'padding-top': size * 0.2 + 'px',
                             'font-size': size * 0.3 + 'px',
                             'height':size + 'px'
-                        }">
+                        }" id="flex">
                     </v-flex>
                     <v-flex xs4 :style="{padding: size * 0.06 + 'px'}">
                         <v-btn @click="scramble" block text :ripple="false" color="green"
@@ -48,16 +48,8 @@
                             'font-size': size * 0.3 + 'px',
                             'height': size + 'px'
                         }">
-                        <v-slider
-                            :value="progress"
-                            style="margin: 0%; padding: 0%;"
-                            :max="solution.length" 
-                            :tick-size="3"
-                            thumb-label="always"
-                            ticks="always"
-                            hide-details
-                            v-on:input="setProgress"
-                        >
+                        <v-slider :value="progress" style="margin: 0%; padding: 0%;" :max="solution.length"
+                            :tick-size="3" thumb-label="always" ticks="always" hide-details v-on:input="setProgress">
                             <template v-slot:thumb-label>
                                 {{ progress == 0 ? '#' : solution[progress - 1] }}
                             </template>

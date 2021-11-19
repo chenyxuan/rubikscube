@@ -5,6 +5,7 @@ import World from "../../cube/world";
 import Setting from "../setting";
 import { cube_config, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
+import Interactor from "../../cube/interactor";
 
 @Component({
     template: require("./index.html"),
@@ -35,6 +36,7 @@ export default class Playground extends Vue {
     Cube = require('cubejs');
 
     elapsedframes: number = 0;
+    interactor: Interactor;
 
     constructor() {
         super();
@@ -57,6 +59,7 @@ export default class Playground extends Vue {
         this.height = document.documentElement.clientHeight;
         this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
         this.viewport.resize(this.width, this.height - this.size * 2.5);
+        this.interactor = new Interactor(document.getElementById("flex"), this.world.controller.interact);
         this.world.cube.dirty = true;
     }
 

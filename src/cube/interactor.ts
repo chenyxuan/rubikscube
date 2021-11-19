@@ -32,7 +32,6 @@ export default class Interactor {
         if (this.target !== this.dom || this.last?.identifier != first.identifier) {
             return false;
         }
-        this.dom.tabIndex = 1;
         this.dom.focus();
         const action = new Interaction(
             event.type,
@@ -54,7 +53,6 @@ export default class Interactor {
         if (this.target !== this.dom) {
             return true;
         }
-        this.dom.tabIndex = 1;
         this.dom.focus();
         const action = new Interaction(event.type, event.clientX, event.clientY);
         this.callback(action);
@@ -64,7 +62,8 @@ export default class Interactor {
         return false;
     };
 
-    constructor(dom: HTMLElement, callback: (action: Interaction) => void) {
+    constructor(dom: HTMLElement | null, callback: (action: Interaction) => void) {
+        if(dom == null) return;
         this.dom = dom;
         this.callback = callback;
         document.addEventListener("touchstart", this.touch);
