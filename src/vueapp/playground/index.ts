@@ -81,11 +81,8 @@ export default class Playground extends Vue {
             return Math.abs(value - Math.PI) < 1e-6;
         }));
     }
-    solve(): void {
-        if (this.elapsedframes < cube_config.frames) {
-            return;
-        }
 
+    solve(): void {
         this.isPlayerMode = true;
         this.initState = this.world.cube.serialize();
         this.solution = this.Cube
@@ -99,8 +96,6 @@ export default class Playground extends Vue {
         this.setProgress(0);
         this.idle(0.5);
         this.isPlaying = true;
-
-        this.elapsedframes = 0;
     }
 
     @Watch("isPlayerMode")
@@ -147,14 +142,8 @@ export default class Playground extends Vue {
     }
 
     quit(): void {
-        if (this.elapsedframes < cube_config.frames) {
-            return;
-        }
-
         this.isPlaying = false;
         this.isPlayerMode = false;
-
-        this.elapsedframes = 0;
     }
 
     setProgress(value: number) {
@@ -169,5 +158,35 @@ export default class Playground extends Vue {
         }
 
         this.progress = value;
+    }
+
+    greenButton(): void {
+        if (!this.isPlayerMode) {
+            this.scramble();
+        } else {
+            this.play();
+        }
+    }
+    
+    blueButton(): void {
+        if (!this.isPlayerMode) {
+            this.reset();
+        } else {
+            this.pause();
+        }
+    }
+
+    redButton(): void {
+        if (this.elapsedframes < cube_config.frames) {
+            return;
+        }
+
+        if (!this.isPlayerMode) {
+            this.solve();
+        } else {
+            this.quit();
+        }
+
+        this.elapsedframes = 0;
     }
 }
