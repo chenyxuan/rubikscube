@@ -34,9 +34,8 @@ jobs:
         folder: dist # The folder the action should deploy.
       
     - name: Mirror
-      uses: pixta-dev/repository-mirroring-action@v1
-      with:
-        target_repo_url:
-          git@gitee.com:chenyxuan/rubikscube.git
-        ssh_private_key:
-          ${{ secrets.GITEE_PRIVATE_KEY }}
+      uses: spyoungtech/mirror-action@master
+        with:
+          REMOTE: git@gitee.com:chenyxuan/rubikscube.git
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.GITEE_PRIVATE_KEY }}
+          GIT_SSH_NO_VERIFY_HOST: "true"
