@@ -35,7 +35,7 @@ jobs:
       
     - name: Mirror
       uses: spyoungtech/mirror-action@master
-        with:
-          REMOTE: git@gitee.com:chenyxuan/rubikscube.git
-          GIT_SSH_PRIVATE_KEY: ${{ secrets.GITEE_PRIVATE_KEY }}
-          GIT_SSH_NO_VERIFY_HOST: "true"
+      with:
+        REMOTE: git@gitee.com:chenyxuan/rubikscube.git
+        GIT_SSH_PRIVATE_KEY: ${{ secrets.GITEE_PRIVATE_KEY }}
+        GIT_SSH_NO_VERIFY_HOST: "true"
