@@ -32,3 +32,16 @@ jobs:
       with:
         branch: gh-pages # The branch the action should deploy to.
         folder: dist # The folder the action should deploy.
+
+  
+  mirror:
+    needs: build
+    runs-on: ubuntu-18.04
+    steps:                                              # <-- must use actions/checkout@v1 before mirroring!
+    - uses: actions/checkout@v1
+    - uses: pixta-dev/repository-mirroring-action@v1
+      with:
+        target_repo_url:
+          git@gitee.com:chenyxuan/rubikscube-mirror.git
+        ssh_private_key:                                # <-- use 'secrets' to pass credential information.
+          ${{ secrets.GITEE_PRIVATE_KEY }}
