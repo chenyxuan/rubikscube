@@ -35,9 +35,8 @@ export default class World {
     this.scene.rotation.x = Math.PI / 6;
     this.scene.rotation.y = -Math.PI / 4 + Math.PI / 16;
 
-    this.ambient = new THREE.AmbientLight(0xffffff, 1);
-
-    this.directional = new THREE.DirectionalLight(0xffffff, 0);
+    this.ambient = new THREE.AmbientLight(0xffffff, 0.9);
+    this.directional = new THREE.DirectionalLight(0xffffff, 0.1);
     this.directional.position.set(cubelet_defs.size, cubelet_defs.size * 3, cubelet_defs.size * 2);
 
     this.scene.add(this.ambient);

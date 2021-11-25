@@ -6,14 +6,13 @@ import Setting from "../setting";
 import { cube_config, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
-import Demo from "../demo";
+import Capturer from "../../cube/capture";
 
 @Component({
     template: require("./index.html"),
     components: {
         viewport: Viewport,
         setting: Setting,
-        demo : Demo,        
     },
 })
 
@@ -40,7 +39,11 @@ export default class Playground extends Vue {
 
     elapsedframes: number = 0;
     interactor: Interactor;
-    
+
+    listd : boolean = false;
+    capturer : Capturer = new Capturer();
+    img : string = "";
+
     constructor() {
         super();
     }
@@ -52,6 +55,7 @@ export default class Playground extends Vue {
             document.getElementById("top-flex"),
             document.getElementById("bottom-flex")
         ], this.world.controller.interact);
+        this.img = this.capturer.generate("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
         this.$nextTick(this.resize);
         this.loop();
     }
@@ -193,5 +197,19 @@ export default class Playground extends Vue {
         this.elapsedframes = 0;
     }
 
-
+    startDemo(): void {
+        this.isPlayerMode = true;
+        this.initState = this.world.cube.serialize();
+        this.solution = this.Cube
+            .fromString(this.initState)
+            .solve()
+            .split(' ').
+            filter(Boolean);
+        this.solution.push("~");
+        console.log(this.initState.join(""));
+        console.log(this.solution.join(" "));
+        this.setProgress(0);
+        this.idle(0.5);
+        this.isPlaying = true;
+    }
 }

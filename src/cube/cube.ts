@@ -186,7 +186,7 @@ export default class Cube extends THREE.Group {
     return result;
   }
 
-  restore(state: string[]): void {
+  restore(state: string[], sscale : number = 1): void {
     let x, y, z;
     let cur = 0;
     let face;
@@ -208,6 +208,7 @@ export default class Cube extends THREE.Group {
           const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
           sticker.rotation.setFromVector3(face_attr.rotation);
           sticker.position.copy(face_attr.position);
+          sticker.position.multiplyScalar(sscale);
           cubelet.stickers[face] = sticker;
           cubelet.add(sticker);
         }
@@ -229,6 +230,7 @@ export default class Cube extends THREE.Group {
           const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
           sticker.rotation.setFromVector3(face_attr.rotation);
           sticker.position.copy(face_attr.position);
+          sticker.position.multiplyScalar(sscale);
           cubelet.stickers[face] = sticker;
           cubelet.add(sticker);
         }
@@ -250,6 +252,7 @@ export default class Cube extends THREE.Group {
           const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
           sticker.rotation.setFromVector3(face_attr.rotation);
           sticker.position.copy(face_attr.position);
+          sticker.position.multiplyScalar(sscale);
           cubelet.stickers[face] = sticker;
           cubelet.add(sticker);
         }
@@ -271,6 +274,7 @@ export default class Cube extends THREE.Group {
           const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
           sticker.rotation.setFromVector3(face_attr.rotation);
           sticker.position.copy(face_attr.position);
+          sticker.position.multiplyScalar(sscale);
           cubelet.stickers[face] = sticker;
           cubelet.add(sticker);
         }
@@ -292,6 +296,7 @@ export default class Cube extends THREE.Group {
           const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
           sticker.rotation.setFromVector3(face_attr.rotation);
           sticker.position.copy(face_attr.position);
+          sticker.position.multiplyScalar(sscale);
           cubelet.stickers[face] = sticker;
           cubelet.add(sticker);
         }
@@ -313,6 +318,7 @@ export default class Cube extends THREE.Group {
           const sticker = new THREE.Mesh(cubelet_sticker, cubelet_lambers[color]);
           sticker.rotation.setFromVector3(face_attr.rotation);
           sticker.position.copy(face_attr.position);
+          sticker.position.multiplyScalar(sscale);
           cubelet.stickers[face] = sticker;
           cubelet.add(sticker);
         }
