@@ -6,12 +6,14 @@ import Setting from "../setting";
 import { cube_config, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
+import Method from "../method";
 
 @Component({
     template: require("./index.html"),
     components: {
         viewport: Viewport,
         setting: Setting,
+        method : Method,        
     },
 })
 
