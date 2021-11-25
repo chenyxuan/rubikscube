@@ -6,14 +6,14 @@ import Setting from "../setting";
 import { cube_config, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
-import Method from "../method";
+import Demo from "../demo";
 
 @Component({
     template: require("./index.html"),
     components: {
         viewport: Viewport,
         setting: Setting,
-        method : Method,        
+        demo : Demo,        
     },
 })
 
@@ -30,16 +30,17 @@ export default class Playground extends Vue {
 
     solution: string[] = [];
     progress: number = 0;
+    
     isPlayerMode: boolean = false;
     isPlaying: boolean = false;
     key: number = 0;
     initState: string[] = [];
-
+    
     Cube = require('cubejs');
 
     elapsedframes: number = 0;
     interactor: Interactor;
-
+    
     constructor() {
         super();
     }
@@ -191,4 +192,6 @@ export default class Playground extends Vue {
 
         this.elapsedframes = 0;
     }
+
+
 }
