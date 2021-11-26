@@ -7,7 +7,7 @@ import { cube_config, faceToColor, lblOrderMapping, stringToTwistParams } from "
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
 import Capturer from "../../cube/capture";
-import solveWithLBL from "./lbl";
+import LBLSolver from "../../cube/lbl";
 
 @Component({
     template: require("./index.html"),
@@ -39,7 +39,7 @@ export default class Playground extends Vue {
     cubejsCube = require('cubejs');
 
     elapsedFrames: number = 0;
-    elapsedFramesThreshold : number = 30;
+    elapsedFramesThreshold: number = 30;
 
     interactor: Interactor;
 
@@ -51,7 +51,9 @@ export default class Playground extends Vue {
     demoBackupState: string[] = [];
     demoName: string;
     isDemoMode: boolean = false;
+    lblSolver = new LBLSolver();
 
+    
     constructor() {
         super();
     }
@@ -106,21 +108,22 @@ export default class Playground extends Vue {
         this.initState = this.world.cube.serialize();
 
         const solverId = cube_config.solverId;
-        if(solverId == 0) {
-            const lblState : string[] = [];
-            for(const faceState of this.initState) {
+        if (solverId == 0) {
+            const lblState: string[] = [];
+            for (const faceState of this.initState) {
                 lblState.push(faceToColor[faceState]);
             }
-            const lblSolution = solveWithLBL(lblState);
+            const lblSolution = this.lblSolver.solve(lblState).filter(Boolean);
             this.solution = [];
-            for(const lblPhase of lblSolution) {
+            for (const lblPhase of lblSolution) {
                 const lblOrders = lblPhase.split("").filter(Boolean);
-                for(const order of lblOrders) {
+                for (const order of lblOrders) {
                     const step = lblOrderMapping[order];
-                    if(step) {
+                    if (step) {
                         this.solution.push(step);
                     }
                 }
+                this.solution.push("~");
             }
         }
         else if (solverId === 1) {
@@ -129,8 +132,8 @@ export default class Playground extends Vue {
                 .solve()
                 .split(' ').
                 filter(Boolean);
+            this.solution.push("~");
         }
-        this.solution.push("~");
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
         this.setProgress(0);
