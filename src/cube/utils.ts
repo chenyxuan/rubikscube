@@ -6,6 +6,7 @@ export const cube_config = {
   frames: 30,
   sensibility: 25 * 1e-4,
   scramble_steps: 20,
+  solverId: 1,
 }
 
 export const cubelet_colors: { [key: string]: string } = {

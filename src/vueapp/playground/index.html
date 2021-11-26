@@ -12,14 +12,35 @@
                 school
             </v-icon>
         </v-btn>
+
+        <v-btn fixed left top text color="primary" style="user-select: none; margin: 0%; padding: 0%;"
+            :style="{height: size+'px', 'margin-left': width / 2 - Math.min(size * 4, width / 2 - size / 4) + 'px'}"
+            @click="listd=true" v-if="isDemoMode">
+            <div :style="{'font-size':(size * 0.4)+'px'}" style="text-transform: none;">{{ demoName }}</div>
+        </v-btn>
+
         <v-bottom-sheet v-model="listd">
-            <v-btn @click="startDemo">
-                Hello
-            </v-btn>
-            <v-card>
-                <v-flex>
-                    <img :src="img">
-                </v-flex>
+            <v-card text style="margin-left: 0%; margin-right: 0%; padding-left: 0%; padding-right: 0%;">
+                <v-container fluid grid-list-md text-xs-center style="padding-left: 0%; padding-right: 0%;"
+                    :style="{width: Math.min(size * 10, width) + 'px'}">
+                    <v-layout row wrap
+                        style="margin-left: 0%; margin-right: 0%; padding-left: 0%; padding-right: 0%; min-width: 0%; min-height: 0%; align-items: stretch;">
+                        <v-card outlined style="margin: 0%; padding: 0%;" :style="{'width': demoGridWidth  + 'px'}"
+                            v-for="(demoImage, i) in demoImages" :key="i">
+                            <v-btn block depressed text color="primary" :style="{
+                                'font-size': size * 0.3 + 'px',
+                                'height': size * 0.35 + 'px'
+                            }" style="text-transform: none;
+                            text-align: center;
+                            margin: 0%;
+                            padding: 0%;" @click="selectDemo(i)">
+                                {{ demoData[i].name }}
+                            </v-btn>
+                            <img :src="demoImage" style="margin: 0%; padding: 0%;"
+                                :style="{'width':demoGridWidth  + 'px'}" @click="selectDemo(i)">
+                        </v-card>
+                    </v-layout>
+                </v-container>
             </v-card>
         </v-bottom-sheet>
 

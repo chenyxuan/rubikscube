@@ -4,7 +4,7 @@
   "description": "online Rubik's cube for beginners",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test:unit",
+    "test": "jest --coverage",
     "test:unit": "jest --coverage",
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
