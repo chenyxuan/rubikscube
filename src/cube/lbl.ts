@@ -5,6 +5,18 @@ export default class LBLSolver {
     nextFace: { [key: string]: string } = { l: "f", f: "r", r: "b", b: "l" };
     prevFace: { [key: string]: string } = { l: "b", b: "r", r: "f", f: "l" };
 
+    /*
+    
+        0: "First layer edges",
+        1: "First layer corners",
+        2: "Second layer",
+        3: "Top cross",
+        4: "Third layer corners (pos)",
+        5: "Third layer corners (ori)",
+        6: "Third layer edges"
+
+    */
+
     getCubeState(state: string[]) {
         this.cubeState = {
             b: state[49],
@@ -170,7 +182,7 @@ export default class LBLSolver {
                 case "D":
                     this.Twist_D();
                     break;
-                case "d": 	
+                case "d":
                     this.Twist_D(); this.Twist_D(); this.Twist_D();
                     break;
                 case "U":
@@ -356,10 +368,16 @@ export default class LBLSolver {
     SECOND_LAYER(): string {
         console.log("------------ COMPLETE THE SECOND LAYER ------------");
         let order = "";
+        for (let i = 0; i < 4; i++) {
+            order += this.SECOND_LAYER_SINGLE("fr", this.cubeState["f"] + this.cubeState["r"]);
+            order += "Y";
+            this.changeState("Y");
+        }
+        /*        
         order += this.SECOND_LAYER_SINGLE("lf", this.cubeState["l"] + this.cubeState["f"]);
-        order += this.SECOND_LAYER_SINGLE("fr", this.cubeState["f"] + this.cubeState["r"]);
         order += this.SECOND_LAYER_SINGLE("rb", this.cubeState["r"] + this.cubeState["b"]);
         order += this.SECOND_LAYER_SINGLE("bl", this.cubeState["b"] + this.cubeState["l"]);
+        */
         return this.compress(order);
     };
 
@@ -398,10 +416,7 @@ export default class LBLSolver {
             let times = 0;
             for (let j = i + 1; j < i + 4; j++) {
                 const next = j % 4;
-
-
                 let lastc = this.cubeState[blocks[last]].replace(uc, "");
-
                 let nextc = this.cubeState[blocks[next]].replace(uc, "");
 
                 if (this.nextColor[lastc[0]] == lastc[1]) {

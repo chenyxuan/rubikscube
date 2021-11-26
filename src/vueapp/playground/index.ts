@@ -3,11 +3,12 @@ import { Component, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-import { cube_config, faceToColor, lblOrderMapping, stringToTwistParams } from "../../cube/utils";
+import { cube_config, delayedYellowToTop, faceToColor, lblOrderMapping, oppositeMapping, stringToTwistParams, whiteToBottom } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
 import Capturer from "../../cube/capture";
 import LBLSolver from "../../cube/lbl";
+import Cube from "../../cube/cube";
 
 @Component({
     template: require("./index.html"),
@@ -112,26 +113,50 @@ export default class Playground extends Vue {
 
         const solverId = cube_config.solverId;
         if (solverId == 0) {
+            this.solution = [];
+
+            const wtb = whiteToBottom(this.initState);
             const lblState: string[] = [];
-            for (const faceState of this.initState) {
+
+            const cube = new Cube();
+            cube.restore(this.initState);
+
+            const params = stringToTwistParams[wtb];
+            for (const layer of params.layers) {
+                cube.table.groups[params.axis][layer].twist(params.angle, true);
+            }
+
+            const wtbState = cube.serialize();
+            for (const faceState of wtbState) {
                 lblState.push(faceToColor[faceState]);
             }
-            const lblSolution = this.lblSolver.solve(lblState).filter(Boolean);
-            this.solution = [];
-            for (const lblPhase of lblSolution) {
-                const lblOrders = lblPhase.split("").filter(Boolean);
+
+            this.solution.push(delayedYellowToTop(wtb).combined);
+
+            const delayed = delayedYellowToTop(wtb).delayed;
+
+            const lblSolution = this.lblSolver.solve(lblState);
+            for (let i = 0; i < lblSolution.length; i++) {
+                const lblOrders = lblSolution[i].split("").filter(Boolean);
                 for (const order of lblOrders) {
-                    const step = lblOrderMapping[order];
-                    if (step) {
-                        this.solution.push(step);
+                    let step = lblOrderMapping[order];
+                    if(!step) continue;
+                    if(i <= 1) {
+                        const params = stringToTwistParams[step];
+                        if(params.axis != delayed[0]) {
+                            step = oppositeMapping[step[0]].concat(step.substring(1));
+                        }
                     }
+                    this.solution.push(step);
                 }
-                this.solution.push("~");
+                if(i == 1) {
+                    this.solution.push(delayed);
+                }
             }
-            if (this.solution.length == 0) {
-                this.solution.push("~");
-            }
-            if (lblSolution.length <= 3) {
+            this.solution.push("~");
+            this.solution = this.solution.filter(Boolean);
+
+            if (lblSolution.filter(Boolean).length <= 3) {
                 this.showTicks = "always";
             } else {
                 this.showTicks = false;
@@ -162,7 +187,6 @@ export default class Playground extends Vue {
     onPlayingChange(): void {
         this.world.controller.disable = this.isPlaying;
     }
-
     callback(): void {
         if (this.isPlayerMode && this.isPlaying) {
             if (this.progress == this.solution.length) {
