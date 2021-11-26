@@ -144,7 +144,11 @@ export default class Playground extends Vue {
                     if(i <= 1) {
                         const params = stringToTwistParams[step];
                         if(params.axis != delayed[0]) {
-                            step = oppositeMapping[step[0]].concat(step.substring(1));
+                            if(step.length > 1) {
+                                step = oppositeMapping[step[0]].concat(step.substring(1));
+                            } else {
+                                step = oppositeMapping[step[0]];
+                            }
                         }
                     }
                     this.solution.push(step);
