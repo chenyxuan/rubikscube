@@ -1,8 +1,8 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { cube_config } from "../../cube/utils";
-import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/default.css'
+import VueSlider from 'vue-slider-component';
+import 'vue-slider-component/theme/default.css';
 
 
 @Component({
@@ -54,5 +54,12 @@ export default class Setting extends Vue {
 
     set scramble_steps(value: number) {
         cube_config.scramble_steps = value;
+    }
+
+    get solver_id() {
+        return cube_config.solverId;
+    }
+    set solver_id(value: number) {
+        cube_config.solverId = value;
     }
 }

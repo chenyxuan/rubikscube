@@ -10,6 +10,17 @@
         <v-card text style="margin: auto;">
             <v-container fluid grid-list-md text-xs-center :style="{width: Math.min(size * 8, width) + 'px'}">
                 <v-subheader>
+                    SOLVER ALGORITHM
+                </v-subheader>
+                <v-flex xs12 :style="{
+                    'padding-left': size / 2 + 'px',
+                }">
+                    <v-radio-group v-model="solver_id" row>
+                        <v-radio label="Layer By Layer Method" :value="0" off-icon="radio_button_unchecked" on-icon="radio_button_checked"></v-radio>
+                        <v-radio label="Kociemba's Algorithm" :value="1" off-icon="radio_button_unchecked"  on-icon="radio_button_checked"></v-radio>
+                    </v-radio-group>
+                </v-flex>
+                <v-subheader>
                     SCRAMBLE LENGTH
                 </v-subheader>
                 <v-flex xs12 :style="{
@@ -19,7 +30,8 @@
                     'font-size': (size * 0.3) + 'px',
                     'height':size + 'px'
                 }">
-                    <vue-slider v-model="scramble_steps" thumb-label="always" :max="40" :min="0" :marks="[0,10,20,30,40]"></vue-slider>
+                    <vue-slider v-model="scramble_steps" thumb-label="always" :max="40" :min="0"
+                        :marks="[0,10,20,30,40]"></vue-slider>
                 </v-flex>
                 <v-subheader>
                     FRAMES PER TWIST
@@ -31,7 +43,8 @@
                     'font-size': (size * 0.3) + 'px',
                     'height':size + 'px'
                 }">
-                    <vue-slider v-model="frames" thumb-label="always" :max="60" :min="0" :marks="[0,15,30,45,60]"></vue-slider>
+                    <vue-slider v-model="frames" thumb-label="always" :max="60" :min="0" :marks="[0,15,30,45,60]">
+                    </vue-slider>
                 </v-flex>
                 <v-subheader>
                     SENSITIVITY
@@ -43,7 +56,8 @@
                     'font-size': (size * 0.3) + 'px',
                     'height':size + 'px'
                 }">
-                    <vue-slider v-model="sensibility" thumb-label="always" :max="100" :min="0" :marks="[0,25,50,75,100]"></vue-slider>
+                    <vue-slider v-model="sensibility" thumb-label="always" :max="100" :min="0"
+                        :marks="[0,25,50,75,100]"></vue-slider>
                 </v-flex>
             </v-container>
         </v-card>
