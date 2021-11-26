@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+  "importHelpers":true,
+    "forceConsistentCasingInFileNames":true,
+    "esModuleInterop":true,
     "allowJs": true,
     "target": "es6",
     "module": "esnext",
@@ -11,7 +14,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "moduleResolution": "node",
-    "types": ["webpack-env"]
+    "types": ["webpack-env","jest"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
