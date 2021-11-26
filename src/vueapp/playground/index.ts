@@ -44,7 +44,7 @@ export default class Playground extends Vue {
     capturer : Capturer = new Capturer();
     demoData = require('./demos.json');
     demoImages : string[] = [];
-    gridSize : number = 0;
+    demoGridWidth : number = 0;
 
     constructor() {
         super();
@@ -76,7 +76,7 @@ export default class Playground extends Vue {
         this.width = document.documentElement.clientWidth;
         this.height = document.documentElement.clientHeight;
         this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
-        this.gridSize = ~~((this.width / ~~(this.width / Math.min(this.width / 4, this.height / 5))) * 100) / 100;
+        this.demoGridWidth = ~~(Math.min(this.size * 2, this.width / 4) * 100) / 100;
         this.viewport.resize(this.width, this.height - this.size * 3.5);
         this.world.cube.dirty = true;
     }

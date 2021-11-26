@@ -14,14 +14,14 @@
         </v-btn>
         <v-bottom-sheet v-model="listd">
             <v-card text style="margin: 0%; padding: 0%;">
-                <v-container fluid grid-list-md text-xs-center style="margin: 0%; padding: 0%;">
+                <v-container fluid grid-list-md text-xs-center style="padding: 0%;" :style="{width: Math.min(size * 10, width) + 'px'}">
                     <v-layout row wrap
                         style="margin: 0%; padding: 0%; min-width: 0%; min-height: 0%; align-items: stretch;">
-                        <v-card outlined style="margin: 0%; padding: 0%;" :style="{'width': gridSize  + 'px'}"
+                        <v-card outlined style="margin: 0%; padding: 0%;" :style="{'width': demoGridWidth  + 'px'}"
                             v-for="(demoImage, i) in demoImages" :key="i">
                             <v-flex>
                                 <img :src="demoImage" style="margin: 0%; padding: 0%;"
-                                    :style="{'width':gridSize  + 'px'}">
+                                    :style="{'width':demoGridWidth  + 'px'}">
                             </v-flex>
                         </v-card>
                     </v-layout>
