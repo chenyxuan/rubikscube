@@ -10,14 +10,14 @@
         <v-card text style="margin: auto;">
             <v-container fluid grid-list-md text-xs-center :style="{width: Math.min(size * 8, width) + 'px'}">
                 <v-subheader>
-                    SOLVER ALGORITHM
+                    SOLVING ALGORITHM
                 </v-subheader>
                 <v-flex xs12 :style="{
                     'padding-left': size / 2 + 'px',
                 }">
-                    <v-radio-group v-model="solver_id" row>
+                    <v-radio-group v-model="solver_id">
                         <v-radio label="Layer By Layer Method" :value="0" off-icon="radio_button_unchecked" on-icon="radio_button_checked"></v-radio>
-                        <v-radio label="Kociemba's Algorithm" :value="1" off-icon="radio_button_unchecked"  on-icon="radio_button_checked"></v-radio>
+                        <v-radio label="Kociemba's Algorithm" :value="1" off-icon="radio_button_unchecked"  on-icon="radio_button_checked" :style="{ 'margin-top' : size * 0.2 + 'px'}"></v-radio>
                     </v-radio-group>
                 </v-flex>
                 <v-subheader>
