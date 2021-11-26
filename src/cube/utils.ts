@@ -244,3 +244,12 @@ export const lblOrderMapping : { [key: string]: string} = {
   "Y" : "y",
   "y" : "y'"
 }
+
+export const faceToColor : { [key: string]: string} = {
+  "U" : "y",
+  "F" : "b",
+  "R" : "r",
+  "B" : "g",
+  "D" : "w",
+  "L" : "o"
+}

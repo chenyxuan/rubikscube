@@ -3,7 +3,7 @@ import { Component, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-import { cube_config, lblOrderMapping, stringToTwistParams } from "../../cube/utils";
+import { cube_config, faceToColor, lblOrderMapping, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
 import Capturer from "../../cube/capture";
@@ -105,7 +105,11 @@ export default class Playground extends Vue {
 
         const solverId = cube_config.solverId;
         if(solverId == 0) {
-            const lblSolution = solveWithLBL(this.initState);
+            const lblState : string[] = [];
+            for(const faceState of this.initState) {
+                lblState.push(faceToColor[faceState]);
+            }
+            const lblSolution = solveWithLBL(lblState);
             this.solution = [];
             for(const lblPhase of lblSolution) {
                 const lblOrders = lblPhase.split("").filter(Boolean);
