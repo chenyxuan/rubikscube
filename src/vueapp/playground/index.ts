@@ -39,7 +39,7 @@ export default class Playground extends Vue {
     cubejsCube = require('cubejs');
 
     elapsedFrames: number = 0;
-    elapsedFramesThreshold: number = 30;
+    elapsedFramesThreshold: number = 15;
 
     interactor: Interactor;
 
@@ -48,12 +48,12 @@ export default class Playground extends Vue {
     demoData = require('./demos.json');
     demoImages: string[] = [];
     demoGridWidth: number = 0;
-    demoBackupState: string[] = [];
     demoName: string;
     isDemoMode: boolean = false;
     lblSolver = new LBLSolver();
+    showTicks: Boolean | string = false;
+    backupState: string[] = [];
 
-    
     constructor() {
         super();
     }
@@ -104,6 +104,9 @@ export default class Playground extends Vue {
     }
 
     solve(): void {
+        if (!this.isPlayerMode) {
+            this.backupState = this.world.cube.serialize();
+        }
         this.isPlayerMode = true;
         this.initState = this.world.cube.serialize();
 
@@ -125,6 +128,14 @@ export default class Playground extends Vue {
                 }
                 this.solution.push("~");
             }
+            if (this.solution.length == 0) {
+                this.solution.push("~");
+            }
+            if (lblSolution.length <= 3) {
+                this.showTicks = "always";
+            } else {
+                this.showTicks = false;
+            }
         }
         else if (solverId === 1) {
             this.solution = this.cubejsCube
@@ -133,6 +144,7 @@ export default class Playground extends Vue {
                 .split(' ').
                 filter(Boolean);
             this.solution.push("~");
+            this.showTicks = "always";
         }
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
@@ -189,8 +201,8 @@ export default class Playground extends Vue {
         this.isPlayerMode = false;
         if (this.isDemoMode) {
             this.isDemoMode = false;
-            this.world.cube.restore(this.demoBackupState);
         }
+        this.world.cube.restore(this.backupState);
     }
 
     setProgress(value: number) {
@@ -259,8 +271,8 @@ export default class Playground extends Vue {
 
     selectDemo(idx: number): void {
         this.listd = false;
-        if (!this.isDemoMode) {
-            this.demoBackupState = this.world.cube.serialize();
+        if (!this.isPlayerMode) {
+            this.backupState = this.world.cube.serialize();
         }
         this.isDemoMode = true;
         this.isPlayerMode = true;
