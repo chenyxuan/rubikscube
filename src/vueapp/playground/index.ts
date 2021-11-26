@@ -29,22 +29,25 @@ export default class Playground extends Vue {
 
     solution: string[] = [];
     progress: number = 0;
-    
+
     isPlayerMode: boolean = false;
     isPlaying: boolean = false;
     key: number = 0;
     initState: string[] = [];
-    
+
     Cube = require('cubejs');
 
     elapsedframes: number = 0;
     interactor: Interactor;
 
-    listd : boolean = false;
-    capturer : Capturer = new Capturer();
+    listd: boolean = false;
+    capturer: Capturer = new Capturer();
     demoData = require('./demos.json');
-    demoImages : string[] = [];
-    demoGridWidth : number = 0;
+    demoImages: string[] = [];
+    demoGridWidth: number = 0;
+    demoBackupState: string[] = [];
+    demoName: string;
+    isDemoMode: boolean = false;
 
     constructor() {
         super();
@@ -57,9 +60,8 @@ export default class Playground extends Vue {
             document.getElementById("top-flex"),
             document.getElementById("bottom-flex")
         ], this.world.controller.interact);
-        
-        for(let i = 0; i < this.demoData.length; i++) {
-            console.log(i);
+
+        for (let i = 0; i < this.demoData.length; i++) {
             this.demoImages.push(this.capturer.generate(this.demoData[i].state));
         }
         this.$nextTick(this.resize);
@@ -158,11 +160,25 @@ export default class Playground extends Vue {
     quit(): void {
         this.isPlaying = false;
         this.isPlayerMode = false;
+        if (this.isDemoMode) {
+            this.isDemoMode = false;
+            this.world.cube.restore(this.demoBackupState);
+        }
     }
 
     setProgress(value: number) {
         this.isPlaying = false;
 
+        /*
+        this.world.cube.restore(this.initState);
+        for (let i = this.solution.length - 1; i >= value; i--) {
+            const params = stringToTwistParams[this.solution[i]];
+            for (const layer of params.layers) {
+                this.world.cube.table.groups[params.axis][layer].twist(params.angle * -1, true);
+            }
+        }
+        */
+       
         this.world.cube.restore(this.initState);
         for (let i = 0; i < value; i++) {
             const params = stringToTwistParams[this.solution[i]];
@@ -181,7 +197,7 @@ export default class Playground extends Vue {
             this.play();
         }
     }
-    
+
     blueButton(): void {
         if (!this.isPlayerMode) {
             this.reset();
@@ -204,19 +220,19 @@ export default class Playground extends Vue {
         this.elapsedframes = 0;
     }
 
-    startDemo(): void {
+    selectDemo(idx: number): void {
+        this.listd = false;
+        if (!this.isDemoMode) {
+            this.demoBackupState = this.world.cube.serialize();
+        }
+        this.isDemoMode = true;
         this.isPlayerMode = true;
-        this.initState = this.world.cube.serialize();
-        this.solution = this.Cube
-            .fromString(this.initState)
-            .solve()
-            .split(' ').
-            filter(Boolean);
+        this.demoName = this.demoData[idx].name;
+        this.initState = this.demoData[idx].state.split("");
+        this.solution = this.demoData[idx].solution.split(' ').filter(Boolean);
         this.solution.push("~");
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
         this.setProgress(0);
-        this.idle(0.5);
-        this.isPlaying = true;
     }
 }

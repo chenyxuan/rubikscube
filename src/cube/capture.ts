@@ -18,10 +18,12 @@ export default class Capturer {
         this.renderer.setSize(256, 256, true);
         this.world.resize(256, 256);
         
+        /*
         const distance = cubelet_defs.size * 3 * this.world.perspective;
         this.world.camera.position.z = distance;
         this.world.camera.near = distance - cubelet_defs.size * 3;
         this.world.camera.far = distance + cubelet_defs.size * 8;
+        */
     }
 
     generate(state: string): string {

@@ -1,4 +1,5 @@
 import * as THREE from "three"
+import { Mesh } from "three";
 import Cubelet from "./cubelet";
 import { GroupTable } from "./group";
 import { twister } from "./twister";
@@ -123,6 +124,14 @@ export default class Cube extends THREE.Group {
   //                | D7  D8  D9 |
   //                +------------+
 
+  // UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB
+  // DDDDDDDDDRRRRRRRRRBBBBBBBBBUUUUUUUUULLLLLLLLLFFFFFFFFF
+  // ?????????????R?RRR????B?BBBUUUUUUUUU??????????????????
+  // ????D???????RR?RRR????BBBBBUUUUUUUUU??????LLL??????FFF
+  // ?D?DDD?D????RRRRRR???BBBBBBUUUUUUUUU???LLLLLL???FFFFFF
+  // DDDDDDDDD???RRRRRR???BBBBBBUUUUUUUUU???LLLLLL???FFFFFF
+  // DDDDDDDDD?R?RRRRRR?B?BBBBBBUUUUUUUUU?L?LLLLLL?F?FFFFFF
+
   serialize(): string[] {
     const result: string[] = [];
     let x, y, z;
@@ -202,6 +211,7 @@ export default class Cube extends THREE.Group {
         const color = state[cur++];
         const cubelet = this.cubelets[index];
         cubelet.remove(cubelet.stickers[face]);
+        cubelet.stickers[face] = new Mesh();
 
         if (color != "?") {
           const face_attr = cubelet_face_attrs[face];
@@ -223,6 +233,7 @@ export default class Cube extends THREE.Group {
         const color = state[cur++];
         const cubelet = this.cubelets[index];
         cubelet.remove(cubelet.stickers[face]);
+        cubelet.stickers[face] = new Mesh();
 
         if (color != "?") {
           const face_attr = cubelet_face_attrs[face];
@@ -244,6 +255,7 @@ export default class Cube extends THREE.Group {
         const color = state[cur++];
         const cubelet = this.cubelets[index];
         cubelet.remove(cubelet.stickers[face]);
+        cubelet.stickers[face] = new Mesh();
 
         if (color != "?") {
           const face_attr = cubelet_face_attrs[face];
@@ -265,6 +277,7 @@ export default class Cube extends THREE.Group {
         const color = state[cur++];
         const cubelet = this.cubelets[index];
         cubelet.remove(cubelet.stickers[face]);
+        cubelet.stickers[face] = new Mesh();
 
         if (color != "?") {
           const face_attr = cubelet_face_attrs[face];
@@ -286,6 +299,7 @@ export default class Cube extends THREE.Group {
         const color = state[cur++];
         const cubelet = this.cubelets[index];
         cubelet.remove(cubelet.stickers[face]);
+        cubelet.stickers[face] = new Mesh();
 
         if (color != "?") {
           const face_attr = cubelet_face_attrs[face];
@@ -307,6 +321,7 @@ export default class Cube extends THREE.Group {
         const color = state[cur++];
         const cubelet = this.cubelets[index];
         cubelet.remove(cubelet.stickers[face]);
+        cubelet.stickers[face] = new Mesh();
 
         if (color != "?") {
           const face_attr = cubelet_face_attrs[face];
