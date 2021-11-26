@@ -38,7 +38,9 @@ export default class Playground extends Vue {
 
     cubejsCube = require('cubejs');
 
-    elapsedframes: number = 0;
+    elapsedFrames: number = 0;
+    elapsedFramesThreshold : number = 30;
+
     interactor: Interactor;
 
     listd: boolean = false;
@@ -162,8 +164,8 @@ export default class Playground extends Vue {
             }
         }
 
-        if (this.elapsedframes < cube_config.frames) {
-            this.elapsedframes++;
+        if (this.elapsedFrames < this.elapsedFramesThreshold) {
+            this.elapsedFrames++;
         }
     }
 
@@ -213,6 +215,11 @@ export default class Playground extends Vue {
     }
 
     greenButton(): void {
+        if (this.elapsedFrames < this.elapsedFramesThreshold) {
+            return;
+        }
+        this.elapsedFrames = 0;
+
         if (!this.isPlayerMode) {
             this.scramble();
         } else {
@@ -221,6 +228,11 @@ export default class Playground extends Vue {
     }
 
     blueButton(): void {
+        if (this.elapsedFrames < this.elapsedFramesThreshold) {
+            return;
+        }
+        this.elapsedFrames = 0;
+
         if (!this.isPlayerMode) {
             this.reset();
         } else {
@@ -229,9 +241,10 @@ export default class Playground extends Vue {
     }
 
     redButton(): void {
-        if (this.elapsedframes < cube_config.frames) {
+        if (this.elapsedFrames < this.elapsedFramesThreshold) {
             return;
         }
+        this.elapsedFrames = 0;
 
         if (!this.isPlayerMode) {
             this.solve();
@@ -239,7 +252,6 @@ export default class Playground extends Vue {
             this.quit();
         }
 
-        this.elapsedframes = 0;
     }
 
     selectDemo(idx: number): void {
