@@ -13,13 +13,19 @@
             </v-icon>
         </v-btn>
         <v-bottom-sheet v-model="listd">
-            <v-btn @click="startDemo">
-                Hello
-            </v-btn>
-            <v-card>
-                <v-flex>
-                    <img :src="img">
-                </v-flex>
+            <v-card text style="margin: 0%; padding: 0%;">
+                <v-container fluid grid-list-md text-xs-center style="margin: 0%; padding: 0%;">
+                    <v-layout row wrap
+                        style="margin: 0%; padding: 0%; min-width: 0%; min-height: 0%; align-items: stretch;">
+                        <v-card outlined style="margin: 0%; padding: 0%;" :style="{'width': gridSize  + 'px'}"
+                            v-for="(demoImage, i) in demoImages" :key="i">
+                            <v-flex>
+                                <img :src="demoImage" style="margin: 0%; padding: 0%;"
+                                    :style="{'width':gridSize  + 'px'}">
+                            </v-flex>
+                        </v-card>
+                    </v-layout>
+                </v-container>
             </v-card>
         </v-bottom-sheet>
 

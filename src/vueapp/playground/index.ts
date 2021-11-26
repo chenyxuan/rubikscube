@@ -42,7 +42,9 @@ export default class Playground extends Vue {
 
     listd : boolean = false;
     capturer : Capturer = new Capturer();
-    img : string = "";
+    demoData = require('./demos.json');
+    demoImages : string[] = [];
+    gridSize : number = 0;
 
     constructor() {
         super();
@@ -55,7 +57,11 @@ export default class Playground extends Vue {
             document.getElementById("top-flex"),
             document.getElementById("bottom-flex")
         ], this.world.controller.interact);
-        this.img = this.capturer.generate("U??????UURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+        
+        for(let i = 0; i < this.demoData.length; i++) {
+            console.log(i);
+            this.demoImages.push(this.capturer.generate(this.demoData[i].state));
+        }
         this.$nextTick(this.resize);
         this.loop();
     }
@@ -70,6 +76,7 @@ export default class Playground extends Vue {
         this.width = document.documentElement.clientWidth;
         this.height = document.documentElement.clientHeight;
         this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
+        this.gridSize = ~~((this.width / ~~(this.width / Math.min(this.width / 4, this.height / 5))) * 100) / 100;
         this.viewport.resize(this.width, this.height - this.size * 3.5);
         this.world.cube.dirty = true;
     }
