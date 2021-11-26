@@ -20,11 +20,11 @@
         </v-btn>
 
         <v-bottom-sheet v-model="listd">
-            <v-card text style="margin: 0%; padding: 0%;">
-                <v-container fluid grid-list-md text-xs-center style="padding: 0%;"
+            <v-card text style="margin-left: 0%; margin-right: 0%; padding-left: 0%; padding-right: 0%;">
+                <v-container fluid grid-list-md text-xs-center style="padding-left: 0%; padding-right: 0%;"
                     :style="{width: Math.min(size * 10, width) + 'px'}">
                     <v-layout row wrap
-                        style="margin: 0%; padding: 0%; min-width: 0%; min-height: 0%; align-items: stretch;">
+                        style="margin-left: 0%; margin-right: 0%; padding-left: 0%; padding-right: 0%; min-width: 0%; min-height: 0%; align-items: stretch;">
                         <v-card outlined style="margin: 0%; padding: 0%;" :style="{'width': demoGridWidth  + 'px'}"
                             v-for="(demoImage, i) in demoImages" :key="i">
                             <v-btn block depressed text color="primary" :style="{
