@@ -55,7 +55,7 @@ export default class Playground extends Vue {
             document.getElementById("top-flex"),
             document.getElementById("bottom-flex")
         ], this.world.controller.interact);
-        this.img = this.capturer.generate("UUUUUUUUURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
+        this.img = this.capturer.generate("U??????UURRRRRRRRRFFFFFFFFFDDDDDDDDDLLLLLLLLLBBBBBBBBB");
         this.$nextTick(this.resize);
         this.loop();
     }
