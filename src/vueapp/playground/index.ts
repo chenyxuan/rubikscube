@@ -3,10 +3,11 @@ import { Component, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-import { cube_config, stringToTwistParams } from "../../cube/utils";
+import { cube_config, lblOrderMapping, stringToTwistParams } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
 import Capturer from "../../cube/capture";
+import solveWithLBL from "./lbl";
 
 @Component({
     template: require("./index.html"),
@@ -35,7 +36,7 @@ export default class Playground extends Vue {
     key: number = 0;
     initState: string[] = [];
 
-    Cube = require('cubejs');
+    cubejsCube = require('cubejs');
 
     elapsedframes: number = 0;
     interactor: Interactor;
@@ -54,7 +55,7 @@ export default class Playground extends Vue {
     }
 
     mounted(): void {
-        this.Cube.initSolver();
+        this.cubejsCube.initSolver();
         this.interactor = new Interactor([
             this.viewport.canvasElem,
             document.getElementById("top-flex"),
@@ -101,11 +102,28 @@ export default class Playground extends Vue {
     solve(): void {
         this.isPlayerMode = true;
         this.initState = this.world.cube.serialize();
-        this.solution = this.Cube
-            .fromString(this.initState)
-            .solve()
-            .split(' ').
-            filter(Boolean);
+
+        const solverId = cube_config.solverId;
+        if(solverId == 0) {
+            const lblSolution = solveWithLBL(this.initState);
+            this.solution = [];
+            for(const lblPhase of lblSolution) {
+                const lblOrders = lblPhase.split("").filter(Boolean);
+                for(const order of lblOrders) {
+                    const step = lblOrderMapping[order];
+                    if(step) {
+                        this.solution.push(step);
+                    }
+                }
+            }
+        }
+        else if (solverId === 1) {
+            this.solution = this.cubejsCube
+                .fromString(this.initState)
+                .solve()
+                .split(' ').
+                filter(Boolean);
+        }
         this.solution.push("~");
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
@@ -178,7 +196,7 @@ export default class Playground extends Vue {
             }
         }
         */
-       
+
         this.world.cube.restore(this.initState);
         for (let i = 0; i < value; i++) {
             const params = stringToTwistParams[this.solution[i]];

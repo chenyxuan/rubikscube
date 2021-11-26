@@ -227,3 +227,20 @@ export const stringToTwistParams : { [key: string]: { axis: string, layers : num
   "S'" : { axis : 'z', layers : [1], angle : -Math.PI / 2},
   "S2" : { axis : 'z', layers : [1], angle : Math.PI},
 }
+
+export const lblOrderMapping : { [key: string]: string} = {
+  "U" : "U",
+  "u" : "U'",
+  "D" : "D",
+  "d" : "D'",
+  "F" : "F",
+  "f" : "F'",
+  "L" : "L",
+  "l" : "L'",
+  "R" : "R",
+  "r" : "R'",
+  "B" : "B",
+  "b" : "B'",
+  "Y" : "y",
+  "y" : "y'"
+}
