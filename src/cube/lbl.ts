@@ -56,8 +56,10 @@ export default class LBLSolver {
         this.nextColor[color_r] = color_b;
         this.nextColor[color_b] = color_l;
 
+        /*
         console.log(this.cubeState);
         console.log(this.nextColor);
+        */
     }
 
 

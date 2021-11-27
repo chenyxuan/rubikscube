@@ -40,7 +40,7 @@ export default class Playground extends Vue {
     cubejsCube = require('cubejs');
 
     elapsedFrames: number = 0;
-    elapsedFramesThreshold: number = 15;
+    elapsedFramesThreshold: number = 20;
 
     interactor: Interactor;
 
@@ -60,7 +60,6 @@ export default class Playground extends Vue {
     }
 
     mounted(): void {
-        this.cubejsCube.initSolver();
         this.interactor = new Interactor([
             this.viewport.canvasElem,
             document.getElementById("top-flex"),
@@ -178,6 +177,7 @@ export default class Playground extends Vue {
             }
         }
         else if (solverId === 1) {
+            this.cubejsCube.initSolver();
             this.solution = this.cubejsCube
                 .fromString(this.initState)
                 .solve()
@@ -220,6 +220,8 @@ export default class Playground extends Vue {
 
         if (this.elapsedFrames < this.elapsedFramesThreshold) {
             this.elapsedFrames++;
+        } else {
+            this.cubejsCube.initSolver();
         }
     }
 
