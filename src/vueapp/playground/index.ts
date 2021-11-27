@@ -37,7 +37,7 @@ export default class Playground extends Vue {
     key: number = 0;
     initState: string[] = [];
 
-    cubejsCube = require('cubejs');
+    cubejs = import('./cubejs');
 
     elapsedFrames: number = 0;
     elapsedFramesThreshold: number = 20;
@@ -103,7 +103,7 @@ export default class Playground extends Vue {
         }));
     }
 
-    solve(): void {
+    async solve(): Promise<void> {
         if (!this.isPlayerMode) {
             this.backupState = this.world.cube.serialize();
         }
@@ -177,8 +177,8 @@ export default class Playground extends Vue {
             }
         }
         else if (solverId === 1) {
-            this.cubejsCube.initSolver();
-            this.solution = this.cubejsCube
+            const promise = await this.cubejs;
+            this.solution = promise.Cube
                 .fromString(this.initState)
                 .solve()
                 .split(' ').
@@ -220,8 +220,6 @@ export default class Playground extends Vue {
 
         if (this.elapsedFrames < this.elapsedFramesThreshold) {
             this.elapsedFrames++;
-        } else {
-            this.cubejsCube.initSolver();
         }
     }
 
