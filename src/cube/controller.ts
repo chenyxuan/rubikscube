@@ -144,6 +144,10 @@ export default class Controller {
     }
     this.dragging = true;
     this.holder.index = -1;
+
+    if(this.lock) {
+      return;
+    }
     let min_dist = Infinity;
     for (const axis of ["x", "y", "z"]) {
       const plane = axis_planes[axis];
@@ -247,7 +251,7 @@ export default class Controller {
       } else {
         const dx = this.move.x - this.down.x;
         const dy = this.move.y - this.down.y;
-        this.angle = cube_config.sensibility * (
+        this.angle = (this.lock ? 100e-4 : cube_config.sensibility) * (
           this.axis == "y" ? -dx :
             (
               this.axis == "x" ? -dy :
