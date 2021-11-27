@@ -279,7 +279,9 @@ export const oppositeMapping: { [key: string]: string } = {
   "R": "L",
   "L": "R",
   "F": "B",
-  "B": "F"
+  "B": "F",
+  "y": "y'",
+  "y'": "y"
 }
 
 export const delayedYellowToTop = (last: string): { [key: string]: string } => {
@@ -299,6 +301,7 @@ export const delayedYellowToTop = (last: string): { [key: string]: string } => {
         combined: "",
         delayed: "x2"
       };
+  /*
     case "y":
       return {
         combined: "y'",
@@ -314,6 +317,7 @@ export const delayedYellowToTop = (last: string): { [key: string]: string } => {
         combined: "",
         delayed: "y2"
       };
+  */
     case "z":
       return {
         combined: "z'",
@@ -324,11 +328,13 @@ export const delayedYellowToTop = (last: string): { [key: string]: string } => {
         combined: "z",
         delayed: "z2"
       };
+  /*
     case "z2":
       return {
         combined: "",
         delayed: "z2"
       };
+  */
     default:
       return {
         combined: "x2",

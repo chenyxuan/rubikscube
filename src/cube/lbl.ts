@@ -341,25 +341,57 @@ export default class LBLSolver {
     }
 
     // --------------- COMPLETE THE FIRST LAYER EDGES ---------------
-    FIRST_LAYER_EDGES(): string {
+    FIRST_LAYER_EDGES(delayed: string): string {
         console.log("------------ COMPLETE THE FIRST LAYER EDGES ------------");
         let order = "";
-        order += this.FIRST_LAYER_EDGES_SINGLE("dl", this.cubeState["d"] + this.cubeState["l"]);
+        if (delayed == "z2") {
+            for (let i = 0; i < 4; i++) {
+                order += this.FIRST_LAYER_EDGES_SINGLE("dl", this.cubeState["d"] + this.cubeState["l"]);
+                order += "y";
+                this.changeState("y");
+            }
+        } else if (delayed == "x2") {
+            for (let i = 0; i < 4; i++) {
+                order += this.FIRST_LAYER_EDGES_SINGLE("dr", this.cubeState["d"] + this.cubeState["r"]);
+                order += "y";
+                this.changeState("y");
+            }
+        }
+
+        /*
         order += this.FIRST_LAYER_EDGES_SINGLE("df", this.cubeState["d"] + this.cubeState["f"]);
         order += this.FIRST_LAYER_EDGES_SINGLE("dr", this.cubeState["d"] + this.cubeState["r"]);
         order += this.FIRST_LAYER_EDGES_SINGLE("db", this.cubeState["d"] + this.cubeState["b"]);
+        order += this.FIRST_LAYER_EDGES_SINGLE("dl", this.cubeState["d"] + this.cubeState["l"]);
+        */
         return this.compress(order);
         //Execute(order, "First layer edges");
     };
 
     // --------------  COMPLETE THE FIRST LAYER CORNERS --------------
-    FIRST_LAYER_CORNERS(): string {
+    FIRST_LAYER_CORNERS(delayed: string): string {
         console.log("------------ COMPLETE THE FIRST LAYER CORNERS ------------");
         let order = "";
+        if (delayed == "z2") {
+            for (let i = 0; i < 4; i++) {
+                order += this.FIRST_LAYER_CORNERS_SINGLE("dlf", this.cubeState["d"] + this.cubeState["l"] + this.cubeState["f"]);
+                order += "y";
+                this.changeState("y");
+            }
+        } else if (delayed == "x2") {
+            for (let i = 0; i < 4; i++) {
+                order += this.FIRST_LAYER_CORNERS_SINGLE("drb", this.cubeState["d"] + this.cubeState["r"] + this.cubeState["b"]);
+                order += "y";
+                this.changeState("y");
+            }
+        }
+
+        /*
         order += this.FIRST_LAYER_CORNERS_SINGLE("dlf", this.cubeState["d"] + this.cubeState["l"] + this.cubeState["f"]);
         order += this.FIRST_LAYER_CORNERS_SINGLE("dfr", this.cubeState["d"] + this.cubeState["f"] + this.cubeState["r"]);
         order += this.FIRST_LAYER_CORNERS_SINGLE("drb", this.cubeState["d"] + this.cubeState["r"] + this.cubeState["b"]);
         order += this.FIRST_LAYER_CORNERS_SINGLE("dbl", this.cubeState["d"] + this.cubeState["b"] + this.cubeState["l"]);
+        */
         return this.compress(order);
         //Execute(order, "First layer corners");
     }
@@ -391,13 +423,13 @@ export default class LBLSolver {
             if (this.cubeState.ul[0] == uc && this.cubeState.ur[0] == uc
                 && this.cubeState.uf[0] == uc && this.cubeState.ub[0] == uc)
                 return this.compress(exp_log);
-            else if (this.cubeState.ul[0] == uc && this.cubeState.ur[0] == uc) exp = "FRUruf";
-            else if (this.cubeState.uf[0] == uc && this.cubeState.ub[0] == uc) exp = "RBUbur";
-            else if (this.cubeState.uf[0] == uc && this.cubeState.ur[0] == uc) exp = "FRUruf";
-            else if (this.cubeState.ur[0] == uc && this.cubeState.ub[0] == uc) exp = "RBUbur";
-            else if (this.cubeState.ub[0] == uc && this.cubeState.ul[0] == uc) exp = "BLUlub";
-            else if (this.cubeState.ul[0] == uc && this.cubeState.uf[0] == uc) exp = "LFUful";
-            else exp = "FRUruf";
+            if (this.cubeState.ub[0] == uc && this.cubeState.ul[0] == uc) exp = "rufUFR";
+            else if (this.cubeState.uf[0] == uc && this.cubeState.ub[0] == uc) exp = "rfuFUR";
+            else if (this.cubeState.ul[0] == uc && this.cubeState.ur[0] == uc) exp = "Y";
+            else if (this.cubeState.uf[0] == uc && this.cubeState.ur[0] == uc) exp = "YY";
+            else if (this.cubeState.ur[0] == uc && this.cubeState.ub[0] == uc) exp = "Y";
+            else if (this.cubeState.ul[0] == uc && this.cubeState.uf[0] == uc) exp = "y";
+            else exp = "rufUFRUrfuFUR";
             exp_log += exp;
             this.changeState(exp);
         }
@@ -554,10 +586,10 @@ export default class LBLSolver {
         return "Third Layer Edges Error: " + exp_log;
     }
 
-    solveCube(): string[] {
+    solveCube(delayed: string): string[] {
         let steps = [];
-        steps.push(this.FIRST_LAYER_EDGES());
-        steps.push(this.FIRST_LAYER_CORNERS());
+        steps.push(this.FIRST_LAYER_EDGES(delayed));
+        steps.push(this.FIRST_LAYER_CORNERS(delayed));
         steps.push(this.SECOND_LAYER());
         steps.push(this.TOP_CROSS());
         steps.push(this.THIRD_LAYER_CORNERS_POS());
@@ -588,8 +620,8 @@ export default class LBLSolver {
         return order;
     }
 
-    solve(state: string[]): string[] {
+    solve(state: string[], delayed: string): string[] {
         this.getCubeState(state);
-        return this.solveCube();
+        return this.solveCube(delayed);
     }
 }

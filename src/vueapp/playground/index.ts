@@ -131,20 +131,24 @@ export default class Playground extends Vue {
                 lblState.push(faceToColor[faceState]);
             }
 
-            this.solution.push(delayedYellowToTop(wtb).combined);
+            const result = delayedYellowToTop(wtb);
+            const combined = result.combined;
+            const delayed = result.delayed;
 
-            const delayed = delayedYellowToTop(wtb).delayed;
+            this.solution.push(combined);
+            const lblSolution = this.lblSolver.solve(lblState, delayed);
 
-            const lblSolution = this.lblSolver.solve(lblState);
             for (let i = 0; i < lblSolution.length; i++) {
                 const lblOrders = lblSolution[i].split("").filter(Boolean);
                 for (const order of lblOrders) {
                     let step = lblOrderMapping[order];
-                    if(!step) continue;
-                    if(i <= 1) {
+                    if (!step) continue;
+                    if (i <= 1) {
                         const params = stringToTwistParams[step];
-                        if(params.axis != delayed[0]) {
-                            if(step.length > 1) {
+                        if (params.axis != delayed[0]) {
+                            if (step[0] == 'y') {
+                                step = oppositeMapping[step];
+                            } else if (step.length > 1) {
                                 step = oppositeMapping[step[0]].concat(step.substring(1));
                             } else {
                                 step = oppositeMapping[step[0]];
@@ -153,7 +157,7 @@ export default class Playground extends Vue {
                     }
                     this.solution.push(step);
                 }
-                if(i == 1) {
+                if (i == 1) {
                     this.solution.push(delayed);
                 }
             }
@@ -308,6 +312,7 @@ export default class Playground extends Vue {
         this.initState = this.demoData[idx].state.split("");
         this.solution = this.demoData[idx].solution.split(' ').filter(Boolean);
         this.solution.push("~");
+        this.showTicks = "always";
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
         this.setProgress(0);
