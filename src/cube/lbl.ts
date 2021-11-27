@@ -311,22 +311,18 @@ export default class LBLSolver {
         return "First Layer Corners Single Error: " + exp_log;
     };
 
-    SECOND_LAYER_SINGLE(block_pos: string, block_color: string): string {
-        let exp = "", exp_log = "", s;
+    SECOND_LAYER_SINGLE(): string {
+        const block_color = this.cubeState["f"] + this.cubeState["r"]
+        let exp = "", exp_log = "";
         for (let i = 0; i < 6; i++) {
-            s = this.getBlockPos(block_color);
+            const s = this.getBlockPos(block_color);
             if (s.k.indexOf("u") != -1) {
-                if (this.nextColor[s.v[0]] == s.v[1]) {
-                    if (s.v[1] == this.cubeState[s.k[1]])
-                        exp = "u" + this.prevFace[s.k[1]] + "U" + this.prevFace[s.k[1]].toUpperCase()
-                            + "U" + s.k[1].toUpperCase() + "u" + s.k[1];
-                    else exp = "U";
-                }
-                else {
-                    if (s.v[1] == this.cubeState[s.k[1]])
-                        exp = "U" + this.nextFace[s.k[1]].toUpperCase() + "u" + this.nextFace[s.k[1]]
-                            + "u" + s.k[1] + "U" + s.k[1].toUpperCase();
-                    else exp = "U";
+                if (s.k[1] == 'r' && s.v[1] == this.cubeState["r"]) {
+                    exp = "ufUFURur";
+                } else if (s.k[1] == 'f' && s.v[1] == this.cubeState["f"]) {
+                    exp = "URurufUF";
+                } else {
+                    exp = "U";
                 }
             }
             else {
@@ -346,13 +342,13 @@ export default class LBLSolver {
         let order = "";
         if (delayed == "z2") {
             for (let i = 0; i < 4; i++) {
-                order += this.FIRST_LAYER_EDGES_SINGLE("dl", this.cubeState["d"] + this.cubeState["l"]);
+                order += this.FIRST_LAYER_EDGES_SINGLE("df", this.cubeState["d"] + this.cubeState["f"]);
                 order += "y";
                 this.changeState("y");
             }
         } else if (delayed == "x2") {
             for (let i = 0; i < 4; i++) {
-                order += this.FIRST_LAYER_EDGES_SINGLE("dr", this.cubeState["d"] + this.cubeState["r"]);
+                order += this.FIRST_LAYER_EDGES_SINGLE("db", this.cubeState["d"] + this.cubeState["b"]);
                 order += "y";
                 this.changeState("y");
             }
@@ -401,7 +397,7 @@ export default class LBLSolver {
         console.log("------------ COMPLETE THE SECOND LAYER ------------");
         let order = "";
         for (let i = 0; i < 4; i++) {
-            order += this.SECOND_LAYER_SINGLE("fr", this.cubeState["f"] + this.cubeState["r"]);
+            order += this.SECOND_LAYER_SINGLE();
             order += "Y";
             this.changeState("Y");
         }

@@ -113,7 +113,7 @@ export default class Playground extends Vue {
 
         const solverId = cube_config.solverId;
         if (solverId == 0) {
-            this.solution = [];
+            let solution = [];
 
             const wtb = whiteToBottom(this.initState);
             const lblState: string[] = [];
@@ -135,7 +135,7 @@ export default class Playground extends Vue {
             const combined = result.combined;
             const delayed = result.delayed;
 
-            this.solution.push(combined);
+            solution.push(combined);
             const lblSolution = this.lblSolver.solve(lblState, delayed);
 
             for (let i = 0; i < lblSolution.length; i++) {
@@ -155,14 +155,21 @@ export default class Playground extends Vue {
                             }
                         }
                     }
-                    this.solution.push(step);
+                    solution.push(step);
                 }
                 if (i == 1) {
-                    this.solution.push(delayed);
+                    solution.push(delayed);
                 }
             }
-            this.solution.push("~");
-            this.solution = this.solution.filter(Boolean);
+            solution.push("~");
+            solution = solution.filter(Boolean);
+            for(let i = 0; i + 1 < solution.length; i++) {
+                if(solution[i] == "F" && solution[i + 1] == "F") {
+                    solution[i] = "F'";
+                    solution[i + 1] = "F'";
+                }
+            }
+            this.solution = solution;
 
             if (lblSolution.filter(Boolean).length <= 3) {
                 this.showTicks = "always";
