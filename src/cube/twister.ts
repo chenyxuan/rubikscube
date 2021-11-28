@@ -1,32 +1,30 @@
 export class Twist {
     departure: number;
     arrival: number;
-    durantion: number;
-
-    elapsed: number;
     current: number;
+
+    duration: number;
+    start: number;
 
     callback_func: ((angle : number) => boolean);
     
     constructor(depature : number, arrival : number, duration : number, callback_func : ((angle : number) => boolean)) {
         this.departure = depature;
         this.arrival = arrival;
-        this.durantion = duration;
+        this.duration = duration;
         this.callback_func = callback_func;
 
-        this.elapsed = 0;
+        this.start = new Date().getTime();
     }
 
     finish(): void {
-        this.elapsed = this.durantion;
         this.current = this.arrival;
         this.callback();
     }
 
     // 1 - (1-x)^2
     update(): void {
-        this.elapsed++;
-        const frac = Math.min(Math.max(this.elapsed / this.durantion, 0), 1);
+        const frac = Math.min(Math.max((new Date().getTime() - this.start) / this.duration, 0), 1);
         this.current = frac == 1 ? this.arrival : (this.departure + (this.arrival - this.departure) * (1 - (1 - frac) * (1 - frac)));
     }
 

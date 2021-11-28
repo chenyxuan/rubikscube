@@ -2,7 +2,7 @@ import * as THREE from "three";
 import Cubelet from "./cubelet";
 import { Twist, twister } from "./twister";
 import Cube from "./cube";
-import { axis_vectors, cube_config, indexToLayer } from "./utils";
+import { axis_vectors, cube_config, indexToLayer, twist_duration } from "./utils";
 
 export default class CubeGroup extends THREE.Group {
     holding : boolean;
@@ -135,7 +135,7 @@ export default class CubeGroup extends THREE.Group {
             this.drop();
         } else {
             const frac = Math.abs(this.angle - angle) / (Math.PI / 2);
-            const duration = cube_config.frames * (2 - 2 / (frac + 1));
+            const duration = twist_duration(cube_config.speed) * (2 - 2 / (frac + 1));
             this.twisting = new Twist(this.angle, angle, duration, (value: number) => {
                 this.angle = value;
                 if (Math.abs(this.angle - angle) < 1e-6) {

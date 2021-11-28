@@ -3,10 +3,12 @@ import { Component, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-import { cube_config, stringToTwistParams } from "../../cube/utils";
+import { cube_config, delayedYellowToTop, faceToColor, lblOrderMapping, oppositeMapping, stringToTwistParams, twist_duration, whiteToBottom } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
 import Capturer from "../../cube/capture";
+import LBLSolver from "../../cube/lbl";
+import Cube from "../../cube/cube";
 
 @Component({
     template: require("./index.html"),
@@ -35,9 +37,9 @@ export default class Playground extends Vue {
     key: number = 0;
     initState: string[] = [];
 
-    Cube = require('cubejs');
+    buttonEnable: boolean = true;
+    clickTimeThreshold: number = 300;
 
-    elapsedframes: number = 0;
     interactor: Interactor;
 
     listd: boolean = false;
@@ -45,22 +47,24 @@ export default class Playground extends Vue {
     demoData = require('./demos.json');
     demoImages: string[] = [];
     demoGridWidth: number = 0;
-    demoBackupState: string[] = [];
     demoName: string;
     isDemoMode: boolean = false;
+    lblSolver = new LBLSolver();
+    showTicks: Boolean | string = false;
+    backupState: string[] = [];
+
+    cubejs = import(/* webpackPreload: true */ '../../preload/cubejs');
 
     constructor() {
         super();
     }
 
     mounted(): void {
-        this.Cube.initSolver();
         this.interactor = new Interactor([
             this.viewport.canvasElem,
             document.getElementById("top-flex"),
             document.getElementById("bottom-flex")
         ], this.world.controller.interact);
-
         for (let i = 0; i < this.demoData.length; i++) {
             this.demoImages.push(this.capturer.generate(this.demoData[i].state));
         }
@@ -93,22 +97,97 @@ export default class Playground extends Vue {
     }
 
     idle(value: number): void {
-        twister.twists.push(new Twist(0, Math.PI, cube_config.frames * value, (value: number) => {
+        twister.twists.push(new Twist(0, Math.PI, twist_duration(cube_config.speed) * value, (value: number) => {
             return Math.abs(value - Math.PI) < 1e-6;
         }));
     }
 
-    solve(): void {
-        this.isPlayerMode = true;
+    async solve(): Promise<void> {
+        if (!this.isPlayerMode) {
+            this.backupState = this.world.cube.serialize();
+        }
         this.initState = this.world.cube.serialize();
-        this.solution = this.Cube
-            .fromString(this.initState)
-            .solve()
-            .split(' ').
-            filter(Boolean);
-        this.solution.push("~");
+
+        const solverId = cube_config.solverId;
+        if (solverId == 0) {
+            let solution = [];
+
+            const wtb = whiteToBottom(this.initState);
+            const lblState: string[] = [];
+
+            const cube = new Cube();
+            cube.restore(this.initState);
+
+            const params = stringToTwistParams[wtb];
+            for (const layer of params.layers) {
+                cube.table.groups[params.axis][layer].twist(params.angle, true);
+            }
+
+            const wtbState = cube.serialize();
+            for (const faceState of wtbState) {
+                lblState.push(faceToColor[faceState]);
+            }
+
+            const result = delayedYellowToTop(wtb);
+            const combined = result.combined;
+            const delayed = result.delayed;
+
+            solution.push(combined);
+            const lblSolution = this.lblSolver.solve(lblState, delayed);
+
+            for (let i = 0; i < lblSolution.length; i++) {
+                const lblOrders = lblSolution[i].split("").filter(Boolean);
+                for (const order of lblOrders) {
+                    let step = lblOrderMapping[order];
+                    if (!step) continue;
+                    if (i <= 1) {
+                        const params = stringToTwistParams[step];
+                        if (params.axis != delayed[0]) {
+                            if (step[0] == 'y') {
+                                step = oppositeMapping[step];
+                            } else if (step.length > 1) {
+                                step = oppositeMapping[step[0]].concat(step.substring(1));
+                            } else {
+                                step = oppositeMapping[step[0]];
+                            }
+                        }
+                    }
+                    solution.push(step);
+                }
+                if (i == 1) {
+                    solution.push(delayed);
+                }
+            }
+            solution.push("~");
+            solution = solution.filter(Boolean);
+            for (let i = 0; i + 1 < solution.length; i++) {
+                if (solution[i] == "F" && solution[i + 1] == "F") {
+                    solution[i] = "F'";
+                    solution[i + 1] = "F'";
+                }
+            }
+            this.solution = solution;
+
+            if (lblSolution.filter(Boolean).length <= 3) {
+                this.showTicks = "always";
+            } else {
+                this.showTicks = false;
+            }
+        }
+        else if (solverId === 1) {
+            const promise = await this.cubejs;
+            this.solution = promise.Cube
+                .fromString(this.initState)
+                .solve()
+                .split(' ').
+                filter(Boolean);
+            this.solution.push("~");
+            this.showTicks = "always";
+        }
+
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
+        this.isPlayerMode = true;
         this.setProgress(0);
         this.idle(0.5);
         this.isPlaying = true;
@@ -123,7 +202,6 @@ export default class Playground extends Vue {
     onPlayingChange(): void {
         this.world.controller.disable = this.isPlaying;
     }
-
     callback(): void {
         if (this.isPlayerMode && this.isPlaying) {
             if (this.progress == this.solution.length) {
@@ -138,10 +216,6 @@ export default class Playground extends Vue {
                     this.progress++;
                 }
             }
-        }
-
-        if (this.elapsedframes < cube_config.frames) {
-            this.elapsedframes++;
         }
     }
 
@@ -162,8 +236,8 @@ export default class Playground extends Vue {
         this.isPlayerMode = false;
         if (this.isDemoMode) {
             this.isDemoMode = false;
-            this.world.cube.restore(this.demoBackupState);
         }
+        this.world.cube.restore(this.backupState);
     }
 
     setProgress(value: number) {
@@ -178,7 +252,7 @@ export default class Playground extends Vue {
             }
         }
         */
-       
+
         this.world.cube.restore(this.initState);
         for (let i = 0; i < value; i++) {
             const params = stringToTwistParams[this.solution[i]];
@@ -191,39 +265,55 @@ export default class Playground extends Vue {
     }
 
     greenButton(): void {
-        if (!this.isPlayerMode) {
-            this.scramble();
-        } else {
-            this.play();
+        if (this.buttonEnable) {
+            this.buttonEnable = false;
+            setTimeout(() => {
+                this.buttonEnable = true;
+            }, this.clickTimeThreshold);
+
+            if (!this.isPlayerMode) {
+                this.scramble();
+            } else {
+                this.play();
+            }
+            return;
         }
     }
 
     blueButton(): void {
-        if (!this.isPlayerMode) {
-            this.reset();
-        } else {
-            this.pause();
+        if (this.buttonEnable) {
+            this.buttonEnable = false;
+            setTimeout(() => {
+                this.buttonEnable = true;
+            }, this.clickTimeThreshold);
+
+            if (!this.isPlayerMode) {
+                this.reset();
+            } else {
+                this.pause();
+            }
         }
     }
 
     redButton(): void {
-        if (this.elapsedframes < cube_config.frames) {
-            return;
-        }
+        if (this.buttonEnable) {
+            this.buttonEnable = false;
+            setTimeout(() => {
+                this.buttonEnable = true;
+            }, this.clickTimeThreshold);
 
-        if (!this.isPlayerMode) {
-            this.solve();
-        } else {
-            this.quit();
+            if (!this.isPlayerMode) {
+                this.solve();
+            } else {
+                this.quit();
+            }
         }
-
-        this.elapsedframes = 0;
     }
 
     selectDemo(idx: number): void {
         this.listd = false;
-        if (!this.isDemoMode) {
-            this.demoBackupState = this.world.cube.serialize();
+        if (!this.isPlayerMode) {
+            this.backupState = this.world.cube.serialize();
         }
         this.isDemoMode = true;
         this.isPlayerMode = true;
@@ -231,6 +321,7 @@ export default class Playground extends Vue {
         this.initState = this.demoData[idx].state.split("");
         this.solution = this.demoData[idx].solution.split(' ').filter(Boolean);
         this.solution.push("~");
+        this.showTicks = "always";
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
         this.setProgress(0);

@@ -20,14 +20,14 @@
         </v-btn>
 
         <v-bottom-sheet v-model="listd">
-            <v-card text style="margin-left: 0%; margin-right: 0%; padding-left: 0%; padding-right: 0%;">
-                <v-container fluid grid-list-md text-xs-center style="padding-left: 0%; padding-right: 0%;"
+            <v-card text style="margin: 0%; padding: 0%;">
+                <v-container fluid grid-list-md text-xs-center style="padding: 0%;"
                     :style="{width: Math.min(size * 10, width) + 'px'}">
                     <v-layout row wrap
-                        style="margin-left: 0%; margin-right: 0%; padding-left: 0%; padding-right: 0%; min-width: 0%; min-height: 0%; align-items: stretch;">
-                        <v-card outlined style="margin: 0%; padding: 0%;" :style="{'width': demoGridWidth  + 'px'}"
+                        style="margin: 0%; padding: 0%; min-width: 0%; min-height: 0%; align-items: stretch;">
+                        <v-card style="margin: 0%; padding: 0%;" :style="{'width': demoGridWidth  + 'px'}"
                             v-for="(demoImage, i) in demoImages" :key="i">
-                            <v-btn block depressed text color="primary" :style="{
+                            <v-btn block text color="primary" :style="{
                                 'font-size': size * 0.3 + 'px',
                                 'height': size * 0.35 + 'px'
                             }" style="text-transform: none;
@@ -60,7 +60,8 @@
                     'height': size + 'px'
                 }" v-if="isPlayerMode">
                         <v-slider :value="progress" style="margin: 0%; padding: 0%;" :max="solution.length"
-                            :tick-size="3" thumb-label="always" ticks="always" hide-details v-on:input="setProgress">
+                            :tick-size="3" thumb-label="always" :ticks="showTicks" hide-details
+                            v-on:input="setProgress">
                             <template v-slot:thumb-label>
                                 {{ progress == 0 ? '#' : solution[progress - 1] }}
                             </template>

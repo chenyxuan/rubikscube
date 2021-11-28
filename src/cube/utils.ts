@@ -3,11 +3,15 @@ import { Vector3 } from "three";
 import { Face, Frame, Sticker } from "./utils_internal";
 
 export const cube_config = {
-  frames: 30,
+  speed: 3,
   sensibility: 25 * 1e-4,
   scramble_steps: 20,
   solverId: 1,
 }
+
+export const twist_duration = (speed: number): number => {
+  return (6 - speed) * 200;
+};
 
 export const cubelet_colors: { [key: string]: string } = {
   R: "#B71C1C",
@@ -152,78 +156,193 @@ export const facePostionBindings = [
   },
 ];
 
-export const stringToTwistParams : { [key: string]: { axis: string, layers : number[], angle : number} } = {
-  "L" : { axis : 'x', layers : [0], angle : -Math.PI / 2},
-  "L'" : { axis : 'x', layers : [0], angle : Math.PI / 2},
-  "L2" : { axis : 'x', layers : [0], angle : -Math.PI},
+export const stringToTwistParams: { [key: string]: { axis: string, layers: number[], angle: number } } = {
+  "L": { axis: 'x', layers: [0], angle: -Math.PI / 2 },
+  "L'": { axis: 'x', layers: [0], angle: Math.PI / 2 },
+  "L2": { axis: 'x', layers: [0], angle: -Math.PI },
 
-  "R" : { axis : 'x', layers : [2], angle : Math.PI / 2},
-  "R'" : { axis : 'x', layers : [2], angle : -Math.PI / 2},
-  "R2" : { axis : 'x', layers : [2], angle : Math.PI},
-  
-  "F" : { axis : 'z', layers : [2], angle : Math.PI / 2},
-  "F'" : { axis : 'z', layers : [2], angle : -Math.PI / 2},
-  "F2" : { axis : 'z', layers : [2], angle : Math.PI},
-  
-  "B" : { axis : 'z', layers : [0], angle : -Math.PI / 2},
-  "B'" : { axis : 'z', layers : [0], angle : Math.PI / 2},
-  "B2" : { axis : 'z', layers : [0], angle : -Math.PI},
+  "R": { axis: 'x', layers: [2], angle: Math.PI / 2 },
+  "R'": { axis: 'x', layers: [2], angle: -Math.PI / 2 },
+  "R2": { axis: 'x', layers: [2], angle: Math.PI },
 
-  "U" : { axis : 'y', layers : [2], angle : Math.PI / 2},
-  "U'" : { axis : 'y', layers : [2], angle : -Math.PI / 2},
-  "U2" : { axis : 'y', layers : [2], angle : Math.PI},
+  "F": { axis: 'z', layers: [2], angle: Math.PI / 2 },
+  "F'": { axis: 'z', layers: [2], angle: -Math.PI / 2 },
+  "F2": { axis: 'z', layers: [2], angle: Math.PI },
 
-  "D" : { axis : 'y', layers : [0], angle : -Math.PI / 2},
-  "D'" : { axis : 'y', layers : [0], angle : Math.PI / 2},
-  "D2" : { axis : 'y', layers : [0], angle : -Math.PI},
+  "B": { axis: 'z', layers: [0], angle: -Math.PI / 2 },
+  "B'": { axis: 'z', layers: [0], angle: Math.PI / 2 },
+  "B2": { axis: 'z', layers: [0], angle: -Math.PI },
 
-  "~" : { axis : 'a', layers : [], angle : 0},
+  "U": { axis: 'y', layers: [2], angle: Math.PI / 2 },
+  "U'": { axis: 'y', layers: [2], angle: -Math.PI / 2 },
+  "U2": { axis: 'y', layers: [2], angle: Math.PI },
 
-  "x" : { axis : 'x', layers : [0, 1, 2], angle : Math.PI / 2},
-  "x'" : { axis : 'x', layers : [0, 1, 2], angle : -Math.PI / 2},
-  "x2" : { axis : 'x', layers : [0, 1, 2], angle : Math.PI},
+  "D": { axis: 'y', layers: [0], angle: -Math.PI / 2 },
+  "D'": { axis: 'y', layers: [0], angle: Math.PI / 2 },
+  "D2": { axis: 'y', layers: [0], angle: -Math.PI },
 
-  "y" : { axis : 'y', layers : [0, 1, 2], angle : Math.PI / 2},
-  "y'" : { axis : 'y', layers : [0, 1, 2], angle : -Math.PI / 2},
-  "y2" : { axis : 'y', layers : [0, 1, 2], angle : Math.PI},
+  "~": { axis: 'a', layers: [], angle: 0 },
 
-  "z" : { axis : 'z', layers : [0, 1, 2], angle : Math.PI / 2},
-  "z'" : { axis : 'z', layers : [0, 1, 2], angle : -Math.PI / 2},
-  "z2" : { axis : 'z', layers : [0, 1, 2], angle : Math.PI},
+  "x": { axis: 'x', layers: [0, 1, 2], angle: Math.PI / 2 },
+  "x'": { axis: 'x', layers: [0, 1, 2], angle: -Math.PI / 2 },
+  "x2": { axis: 'x', layers: [0, 1, 2], angle: Math.PI },
 
-  "l" : { axis : 'x', layers : [0, 1], angle : -Math.PI / 2},
-  "l'" : { axis : 'x', layers : [0, 1], angle : Math.PI / 2},
-  "l2" : { axis : 'x', layers : [0, 1], angle : -Math.PI},
+  "y": { axis: 'y', layers: [0, 1, 2], angle: Math.PI / 2 },
+  "y'": { axis: 'y', layers: [0, 1, 2], angle: -Math.PI / 2 },
+  "y2": { axis: 'y', layers: [0, 1, 2], angle: Math.PI },
 
-  "r" : { axis : 'x', layers : [2, 1], angle : Math.PI / 2},
-  "r'" : { axis : 'x', layers : [2, 1], angle : -Math.PI / 2},
-  "r2" : { axis : 'x', layers : [2, 1], angle : Math.PI},
-  
-  "f" : { axis : 'z', layers : [2, 1], angle : Math.PI / 2},
-  "f'" : { axis : 'z', layers : [2, 1], angle : -Math.PI / 2},
-  "f2" : { axis : 'z', layers : [2, 1], angle : Math.PI},
-  
-  "b" : { axis : 'z', layers : [0, 1], angle : -Math.PI / 2},
-  "b'" : { axis : 'z', layers : [0, 1], angle : Math.PI / 2},
-  "b2" : { axis : 'z', layers : [0, 1], angle : -Math.PI},
+  "z": { axis: 'z', layers: [0, 1, 2], angle: Math.PI / 2 },
+  "z'": { axis: 'z', layers: [0, 1, 2], angle: -Math.PI / 2 },
+  "z2": { axis: 'z', layers: [0, 1, 2], angle: Math.PI },
 
-  "u" : { axis : 'y', layers : [2, 1], angle : Math.PI / 2},
-  "u'" : { axis : 'y', layers : [2, 1], angle : -Math.PI / 2},
-  "u2" : { axis : 'y', layers : [2, 1], angle : Math.PI},
+  "l": { axis: 'x', layers: [0, 1], angle: -Math.PI / 2 },
+  "l'": { axis: 'x', layers: [0, 1], angle: Math.PI / 2 },
+  "l2": { axis: 'x', layers: [0, 1], angle: -Math.PI },
 
-  "d" : { axis : 'y', layers : [0, 1], angle : -Math.PI / 2},
-  "d'" : { axis : 'y', layers : [0, 1], angle : Math.PI / 2},
-  "d2" : { axis : 'y', layers : [0, 1], angle : -Math.PI},
+  "r": { axis: 'x', layers: [2, 1], angle: Math.PI / 2 },
+  "r'": { axis: 'x', layers: [2, 1], angle: -Math.PI / 2 },
+  "r2": { axis: 'x', layers: [2, 1], angle: Math.PI },
 
-  "E" : { axis : 'y', layers : [1], angle : -Math.PI / 2},
-  "E'" : { axis : 'y', layers : [1], angle : Math.PI / 2},
-  "E2" : { axis : 'y', layers : [1], angle : -Math.PI},
+  "f": { axis: 'z', layers: [2, 1], angle: Math.PI / 2 },
+  "f'": { axis: 'z', layers: [2, 1], angle: -Math.PI / 2 },
+  "f2": { axis: 'z', layers: [2, 1], angle: Math.PI },
 
-  "M" : { axis : 'x', layers : [1], angle : -Math.PI / 2},
-  "M'" : { axis : 'x', layers : [1], angle : Math.PI / 2},
-  "M2" : { axis : 'x', layers : [1], angle : -Math.PI},
+  "b": { axis: 'z', layers: [0, 1], angle: -Math.PI / 2 },
+  "b'": { axis: 'z', layers: [0, 1], angle: Math.PI / 2 },
+  "b2": { axis: 'z', layers: [0, 1], angle: -Math.PI },
 
-  "S" : { axis : 'z', layers : [1], angle : Math.PI / 2},
-  "S'" : { axis : 'z', layers : [1], angle : -Math.PI / 2},
-  "S2" : { axis : 'z', layers : [1], angle : Math.PI},
+  "u": { axis: 'y', layers: [2, 1], angle: Math.PI / 2 },
+  "u'": { axis: 'y', layers: [2, 1], angle: -Math.PI / 2 },
+  "u2": { axis: 'y', layers: [2, 1], angle: Math.PI },
+
+  "d": { axis: 'y', layers: [0, 1], angle: -Math.PI / 2 },
+  "d'": { axis: 'y', layers: [0, 1], angle: Math.PI / 2 },
+  "d2": { axis: 'y', layers: [0, 1], angle: -Math.PI },
+
+  "E": { axis: 'y', layers: [1], angle: -Math.PI / 2 },
+  "E'": { axis: 'y', layers: [1], angle: Math.PI / 2 },
+  "E2": { axis: 'y', layers: [1], angle: -Math.PI },
+
+  "M": { axis: 'x', layers: [1], angle: -Math.PI / 2 },
+  "M'": { axis: 'x', layers: [1], angle: Math.PI / 2 },
+  "M2": { axis: 'x', layers: [1], angle: -Math.PI },
+
+  "S": { axis: 'z', layers: [1], angle: Math.PI / 2 },
+  "S'": { axis: 'z', layers: [1], angle: -Math.PI / 2 },
+  "S2": { axis: 'z', layers: [1], angle: Math.PI },
+
+  "": { axis: 'a', layers: [], angle: 0 },
+}
+
+export const lblOrderMapping: { [key: string]: string } = {
+  "U": "U",
+  "u": "U'",
+  "D": "D",
+  "d": "D'",
+  "F": "F",
+  "f": "F'",
+  "L": "L",
+  "l": "L'",
+  "R": "R",
+  "r": "R'",
+  "B": "B",
+  "b": "B'",
+  "Y": "y",
+  "y": "y'"
+}
+
+export const faceToColor: { [key: string]: string } = {
+  "U": "w",
+  "F": "g",
+  "R": "r",
+  "B": "b",
+  "D": "y",
+  "L": "o"
+}
+
+export const whiteToBottom = (state: string[]): string => {
+  switch ('U') {
+    case state[4]:
+      return "x2";
+    case state[13]:
+      return "z";
+    case state[22]:
+      return "x'";
+    case state[40]:
+      return "z'";
+    case state[49]:
+      return "x";
+    default:
+      return "";
+  }
+}
+
+export const oppositeMapping: { [key: string]: string } = {
+  "U": "D",
+  "D": "U",
+  "R": "L",
+  "L": "R",
+  "F": "B",
+  "B": "F",
+  "y": "y'",
+  "y'": "y"
+}
+
+export const delayedYellowToTop = (last: string): { [key: string]: string } => {
+  switch (last) {
+    case "x":
+      return {
+        combined: "x'",
+        delayed: "x2"
+      };
+    case "x'":
+      return {
+        combined: "x",
+        delayed: "x2"
+      };
+    case "x2":
+      return {
+        combined: "",
+        delayed: "x2"
+      };
+    /*
+      case "y":
+        return {
+          combined: "y'",
+          delayed: "y2"
+        };
+      case "y'":
+        return {
+          combined: "y",
+          delayed: "y2"
+        };
+      case "y2":
+        return {
+          combined: "",
+          delayed: "y2"
+        };
+    */
+    case "z":
+      return {
+        combined: "z'",
+        delayed: "z2"
+      };
+    case "z'":
+      return {
+        combined: "z",
+        delayed: "z2"
+      };
+    /*
+      case "z2":
+        return {
+          combined: "",
+          delayed: "z2"
+        };
+    */
+    default:
+      return {
+        combined: "x2",
+        delayed: "x2"
+      };
+  }
 }
