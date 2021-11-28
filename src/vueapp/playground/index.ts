@@ -3,7 +3,7 @@ import { Component, Provide, Ref, Watch } from "vue-property-decorator";
 import Viewport from "../viewport";
 import World from "../../cube/world";
 import Setting from "../setting";
-import { cube_config, delayedYellowToTop, faceToColor, lblOrderMapping, oppositeMapping, stringToTwistParams, whiteToBottom } from "../../cube/utils";
+import { cube_config, delayedYellowToTop, faceToColor, lblOrderMapping, oppositeMapping, stringToTwistParams, twist_duration, whiteToBottom } from "../../cube/utils";
 import { Twist, twister } from "../../cube/twister";
 import Interactor from "../../cube/interactor";
 import Capturer from "../../cube/capture";
@@ -97,7 +97,7 @@ export default class Playground extends Vue {
     }
 
     idle(value: number): void {
-        twister.twists.push(new Twist(0, Math.PI, cube_config.speed * value, (value: number) => {
+        twister.twists.push(new Twist(0, Math.PI, twist_duration(cube_config.speed) * value, (value: number) => {
             return Math.abs(value - Math.PI) < 1e-6;
         }));
     }

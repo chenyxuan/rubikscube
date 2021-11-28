@@ -9,6 +9,10 @@ export const cube_config = {
   solverId: 1,
 }
 
+export const twist_duration = (speed: number): number => {
+  return (6 - speed) * 200;
+};
+
 export const cubelet_colors: { [key: string]: string } = {
   R: "#B71C1C",
   L: "#FF6D00",
@@ -301,23 +305,23 @@ export const delayedYellowToTop = (last: string): { [key: string]: string } => {
         combined: "",
         delayed: "x2"
       };
-  /*
-    case "y":
-      return {
-        combined: "y'",
-        delayed: "y2"
-      };
-    case "y'":
-      return {
-        combined: "y",
-        delayed: "y2"
-      };
-    case "y2":
-      return {
-        combined: "",
-        delayed: "y2"
-      };
-  */
+    /*
+      case "y":
+        return {
+          combined: "y'",
+          delayed: "y2"
+        };
+      case "y'":
+        return {
+          combined: "y",
+          delayed: "y2"
+        };
+      case "y2":
+        return {
+          combined: "",
+          delayed: "y2"
+        };
+    */
     case "z":
       return {
         combined: "z'",
@@ -328,13 +332,13 @@ export const delayedYellowToTop = (last: string): { [key: string]: string } => {
         combined: "z",
         delayed: "z2"
       };
-  /*
-    case "z2":
-      return {
-        combined: "",
-        delayed: "z2"
-      };
-  */
+    /*
+      case "z2":
+        return {
+          combined: "",
+          delayed: "z2"
+        };
+    */
     default:
       return {
         combined: "x2",

@@ -8,10 +8,10 @@ export class Twist {
 
     callback_func: ((angle : number) => boolean);
     
-    constructor(depature : number, arrival : number, speed : number, callback_func : ((angle : number) => boolean)) {
+    constructor(depature : number, arrival : number, duration : number, callback_func : ((angle : number) => boolean)) {
         this.departure = depature;
         this.arrival = arrival;
-        this.duration = (6 - speed) * 200;
+        this.duration = duration;
         this.callback_func = callback_func;
 
         this.start = new Date().getTime();
