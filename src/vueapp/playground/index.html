@@ -60,7 +60,8 @@
                     'height': size + 'px'
                 }" v-if="isPlayerMode">
                         <v-slider :value="progress" style="margin: 0%; padding: 0%;" :max="solution.length"
-                            :tick-size="3" thumb-label="always" :ticks="showTicks" hide-details v-on:input="setProgress">
+                            :tick-size="3" thumb-label="always" :ticks="showTicks" hide-details
+                            v-on:input="setProgress">
                             <template v-slot:thumb-label>
                                 {{ progress == 0 ? '#' : solution[progress - 1] }}
                             </template>

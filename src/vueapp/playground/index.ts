@@ -37,10 +37,8 @@ export default class Playground extends Vue {
     key: number = 0;
     initState: string[] = [];
 
-    cubejs = import('./cubejs');
-
-    elapsedFrames: number = 0;
-    elapsedFramesThreshold: number = 20;
+    buttonEnable: boolean = true;
+    clickTimeThreshold: number = 300;
 
     interactor: Interactor;
 
@@ -55,6 +53,8 @@ export default class Playground extends Vue {
     showTicks: Boolean | string = false;
     backupState: string[] = [];
 
+    cubejs = import(/* webpackPreload: true */ '../../preload/cubejs');
+
     constructor() {
         super();
     }
@@ -65,7 +65,6 @@ export default class Playground extends Vue {
             document.getElementById("top-flex"),
             document.getElementById("bottom-flex")
         ], this.world.controller.interact);
-
         for (let i = 0; i < this.demoData.length; i++) {
             this.demoImages.push(this.capturer.generate(this.demoData[i].state));
         }
@@ -107,7 +106,6 @@ export default class Playground extends Vue {
         if (!this.isPlayerMode) {
             this.backupState = this.world.cube.serialize();
         }
-        this.isPlayerMode = true;
         this.initState = this.world.cube.serialize();
 
         const solverId = cube_config.solverId;
@@ -162,8 +160,8 @@ export default class Playground extends Vue {
             }
             solution.push("~");
             solution = solution.filter(Boolean);
-            for(let i = 0; i + 1 < solution.length; i++) {
-                if(solution[i] == "F" && solution[i + 1] == "F") {
+            for (let i = 0; i + 1 < solution.length; i++) {
+                if (solution[i] == "F" && solution[i + 1] == "F") {
                     solution[i] = "F'";
                     solution[i + 1] = "F'";
                 }
@@ -186,8 +184,10 @@ export default class Playground extends Vue {
             this.solution.push("~");
             this.showTicks = "always";
         }
+
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
+        this.isPlayerMode = true;
         this.setProgress(0);
         this.idle(0.5);
         this.isPlaying = true;
@@ -216,10 +216,6 @@ export default class Playground extends Vue {
                     this.progress++;
                 }
             }
-        }
-
-        if (this.elapsedFrames < this.elapsedFramesThreshold) {
-            this.elapsedFrames++;
         }
     }
 
@@ -269,43 +265,49 @@ export default class Playground extends Vue {
     }
 
     greenButton(): void {
-        if (this.elapsedFrames < this.elapsedFramesThreshold) {
-            return;
-        }
-        this.elapsedFrames = 0;
+        if (this.buttonEnable) {
+            this.buttonEnable = false;
+            setTimeout(() => {
+                this.buttonEnable = true;
+            }, this.clickTimeThreshold);
 
-        if (!this.isPlayerMode) {
-            this.scramble();
-        } else {
-            this.play();
+            if (!this.isPlayerMode) {
+                this.scramble();
+            } else {
+                this.play();
+            }
+            return;
         }
     }
 
     blueButton(): void {
-        if (this.elapsedFrames < this.elapsedFramesThreshold) {
-            return;
-        }
-        this.elapsedFrames = 0;
+        if (this.buttonEnable) {
+            this.buttonEnable = false;
+            setTimeout(() => {
+                this.buttonEnable = true;
+            }, this.clickTimeThreshold);
 
-        if (!this.isPlayerMode) {
-            this.reset();
-        } else {
-            this.pause();
+            if (!this.isPlayerMode) {
+                this.reset();
+            } else {
+                this.pause();
+            }
         }
     }
 
     redButton(): void {
-        if (this.elapsedFrames < this.elapsedFramesThreshold) {
-            return;
-        }
-        this.elapsedFrames = 0;
+        if (this.buttonEnable) {
+            this.buttonEnable = false;
+            setTimeout(() => {
+                this.buttonEnable = true;
+            }, this.clickTimeThreshold);
 
-        if (!this.isPlayerMode) {
-            this.solve();
-        } else {
-            this.quit();
+            if (!this.isPlayerMode) {
+                this.solve();
+            } else {
+                this.quit();
+            }
         }
-
     }
 
     selectDemo(idx: number): void {
