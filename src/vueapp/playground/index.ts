@@ -97,7 +97,7 @@ export default class Playground extends Vue {
     }
 
     idle(value: number): void {
-        twister.twists.push(new Twist(0, Math.PI, cube_config.frames * value, (value: number) => {
+        twister.twists.push(new Twist(0, Math.PI, cube_config.speed * value, (value: number) => {
             return Math.abs(value - Math.PI) < 1e-6;
         }));
     }

@@ -3,7 +3,7 @@ import { Vector3 } from "three";
 import { Face, Frame, Sticker } from "./utils_internal";
 
 export const cube_config = {
-  frames: 30,
+  speed: 3,
   sensibility: 25 * 1e-4,
   scramble_steps: 20,
   solverId: 1,

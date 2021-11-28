@@ -135,7 +135,7 @@ export default class CubeGroup extends THREE.Group {
             this.drop();
         } else {
             const frac = Math.abs(this.angle - angle) / (Math.PI / 2);
-            const duration = cube_config.frames * (2 - 2 / (frac + 1));
+            const duration = cube_config.speed * (2 - 2 / (frac + 1));
             this.twisting = new Twist(this.angle, angle, duration, (value: number) => {
                 this.angle = value;
                 if (Math.abs(this.angle - angle) < 1e-6) {

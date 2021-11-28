@@ -40,12 +40,12 @@ export default class Setting extends Vue {
         cube_config.sensibility = value * 1e-4;
     }
     
-    get frames(): number {
-        return cube_config.frames;
+    get speed(): number {
+        return cube_config.speed;
     }
 
-    set frames(value: number) {
-        cube_config.frames = value;
+    set speed(value: number) {
+        cube_config.speed = value;
     }
 
     get scramble_steps(): number {
