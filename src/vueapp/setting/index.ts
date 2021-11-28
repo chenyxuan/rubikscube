@@ -18,6 +18,8 @@ export default class Setting extends Vue {
 
     state: boolean = false;
 
+    config = cube_config;
+
     constructor() {
         super();
     }
@@ -32,6 +34,7 @@ export default class Setting extends Vue {
         this.size = Math.ceil(Math.min(this.width / 6, this.height / 12));
     }
 
+    /*
     get sensibility(): number {
         return cube_config.sensibility * 1e4;
     }
@@ -62,4 +65,5 @@ export default class Setting extends Vue {
     set solver_id(value: number) {
         cube_config.solverId = value;
     }
+    */
 }

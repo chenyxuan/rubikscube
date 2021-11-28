@@ -247,13 +247,13 @@ export default class Controller {
         vector.multiply(this.holder.vector);
         this.angle =
           (vector.x + vector.y + vector.z) *
-          cube_config.sensibility;
+          cube_config.sensibility * 1e-4;
       } else {
         const dx = this.move.x - this.down.x;
         const dy = this.move.y - this.down.y;
-        this.angle = (this.lock ? 100e-4 : cube_config.sensibility) * (
+        this.angle = (this.lock ? 100 : cube_config.sensibility) * 1e-4 * (
           this.axis == "y" ? -dx :
-            (
+            ( 
               this.axis == "x" ? -dy :
                 (
                   dy

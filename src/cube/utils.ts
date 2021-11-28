@@ -4,13 +4,13 @@ import { Face, Frame, Sticker } from "./utils_internal";
 
 export const cube_config = {
   speed: 3,
-  sensibility: 25 * 1e-4,
+  sensibility: 25,
   scramble_steps: 20,
   solverId: 1,
 }
 
 export const twist_duration = (speed: number): number => {
-  return (6 - speed) * 200;
+  return 3600 / (3 + speed);
 };
 
 export const cubelet_colors: { [key: string]: string } = {
