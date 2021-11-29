@@ -54,6 +54,7 @@ export default class Playground extends Vue {
     backupState: string[] = [];
 
     cubejs = import(/* webpackPreload: true */ '../../preload/cubejs');
+    config = cube_config;
 
     constructor() {
         super();
@@ -102,7 +103,7 @@ export default class Playground extends Vue {
         }));
     }
 
-    async solve(): Promise<void> {
+    async solve(isPlaying : boolean = true): Promise<void> {
         if (!this.isPlayerMode) {
             this.backupState = this.world.cube.serialize();
         }
@@ -190,7 +191,7 @@ export default class Playground extends Vue {
         this.isPlayerMode = true;
         this.setProgress(0);
         this.idle(0.5);
-        this.isPlaying = true;
+        this.isPlaying = isPlaying;
     }
 
     @Watch("isPlayerMode")
@@ -202,6 +203,7 @@ export default class Playground extends Vue {
     onPlayingChange(): void {
         this.world.controller.disable = this.isPlaying;
     }
+
     callback(): void {
         if (this.isPlayerMode && this.isPlaying) {
             if (this.progress == this.solution.length) {
@@ -325,5 +327,12 @@ export default class Playground extends Vue {
         console.log(this.initState.join(""));
         console.log(this.solution.join(" "));
         this.setProgress(0);
+    }
+
+    @Watch("config.solverId")
+    onSolverChange(): void {
+        if(this.isPlayerMode && !this.isDemoMode) {
+            this.solve(false);
+        }
     }
 }
