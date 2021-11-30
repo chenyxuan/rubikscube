@@ -103,11 +103,13 @@ export default class Playground extends Vue {
         }));
     }
 
-    async solve(isPlaying : boolean = true): Promise<void> {
-        if (!this.isPlayerMode) {
-            this.backupState = this.world.cube.serialize();
+    async solve(isEntry: boolean = true): Promise<void> {
+        if (isEntry) {
+            if (!this.isPlayerMode) {
+                this.backupState = this.world.cube.serialize();
+            }
+            this.initState = this.world.cube.serialize();
         }
-        this.initState = this.world.cube.serialize();
 
         const solverId = cube_config.solverId;
         if (solverId == 0) {
@@ -191,7 +193,7 @@ export default class Playground extends Vue {
         this.isPlayerMode = true;
         this.setProgress(0);
         this.idle(0.5);
-        this.isPlaying = isPlaying;
+        this.isPlaying = isEntry;
     }
 
     @Watch("isPlayerMode")
@@ -331,7 +333,7 @@ export default class Playground extends Vue {
 
     @Watch("config.solverId")
     onSolverChange(): void {
-        if(this.isPlayerMode && !this.isDemoMode) {
+        if (this.isPlayerMode && !this.isDemoMode) {
             this.solve(false);
         }
     }
