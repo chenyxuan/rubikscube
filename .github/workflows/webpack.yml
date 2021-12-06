@@ -33,13 +33,7 @@ jobs:
       with:
         branch: gh-pages # The branch the action should deploy to.
         folder: dist # The folder the action should deploy.
-<<<<<<< HEAD
          
-=======
-        
-    - name: Test
-      run: npm test
->>>>>>> d1cf5a73430bab9119385da11d08af7b80fd7ce1
   
   test:
     runs-on: ubuntu-latest
