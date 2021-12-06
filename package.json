@@ -105,10 +105,10 @@
     "coverageProvider": "v8",
     "coverageThreshold": {
         "global": {
-          "branches": 100,
-          "functions": 100,
-          "lines": 100,
-          "statements": 100
+          "branches": 74,
+          "functions": 74,
+          "lines": 74,
+          "statements": 74
         }
       } 
   }
