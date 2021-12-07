@@ -17,4 +17,11 @@ describe('Cubelet', () => {
      const result =cubelet.convertFace(Face.D)
      expect(typeof result).toBe(expected.type);
   });
+  test('constructor', () => {
+    const expected = {
+        type: 'object',
+      };
+     const result =cubelet.constructor(number)
+     expect(typeof result).toBe(expected.type);
+  });
    });
