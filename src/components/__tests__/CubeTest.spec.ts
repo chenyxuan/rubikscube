@@ -60,4 +60,11 @@ test('dirty', () => {
    cube.constructor()
    expect(cube.dirty).toBe(true);
 });
+test('constructor', () => {
+  const expected = {
+      type: 'object',
+    };
+   const result =cube.constructor()
+   expect(typeof result).toBe(expected.type);
+});
    });

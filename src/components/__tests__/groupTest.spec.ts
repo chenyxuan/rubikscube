@@ -54,7 +54,15 @@ test('twist', () => {
 
 
 
+test('constructor', () => {
 
+  const expected = {
+      type: 'object',
+    };
+   
+   const result =Group.constructor(cube,"y",1)
+   expect(typeof result).toBe(expected.type);
+});
    });
 
 

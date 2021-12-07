@@ -17,6 +17,14 @@ describe('World', () => {
        const result =world.updateCamera()
        expect(typeof result).toBe(expected.type);
    });
+   test('constructor', () => {
+    const expected = {
+        type: 'undefined',
+      };
+     const result =world.constructor()
+     expect(typeof result).toBe(expected.type);
+ });
+
    });
 
 
