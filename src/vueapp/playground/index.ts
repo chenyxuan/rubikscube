@@ -182,6 +182,12 @@ export default class Playground extends Vue {
             this.solution = promise.Cube
                 .fromString(this.initState)
                 .solve()
+                .replace(/U2/g, "U U")
+                .replace(/D2/g, "D D")
+                .replace(/F2/g, "F F")
+                .replace(/B2/g, "B B")
+                .replace(/L2/g, "L L")
+                .replace(/R2/g, "R R")
                 .split(' ').
                 filter(Boolean);
             this.solution.push("~");
