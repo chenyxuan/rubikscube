@@ -17,7 +17,7 @@ npm run dev
 
 Then you can visit http://localhost:8080/ for a demo in development mode.
 
-## Release
+## Releases
 
 For prodcution, run
 
