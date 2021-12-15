@@ -17,12 +17,12 @@ npm run dev
 
 Then you can visit http://localhost:8080/ for a demo in development mode.
 
-## Production Release
+## Release
 
-For prodcution release, run
+For prodcution, run
 
 ```
 npm run build
 ```
 
-The website page will be compiled in `dist` folder in production mode.
+The components will be compiled in `dist` folder in production mode.
