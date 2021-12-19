@@ -6,7 +6,7 @@ If it takes too long to visit github, visit https://gitee.com/chenyxuan/rubikscu
 
 ## Quick Build
 
-Clone this repo and run (require nodejs 16.x)
+Clone this repo and run (require nodejs 16.x and openssl)
 
 ```
 npm install
