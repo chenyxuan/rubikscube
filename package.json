@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/chenyxuan/rubikscube#readme",
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+   "@babel/core": "^7.16.0",
     "@babel/plugin-proposal-class-properties": "^7.16.0",
     "@babel/plugin-proposal-decorators": "^7.16.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.16.0",
@@ -104,15 +104,12 @@
     "coverageDirectory": "coverage",
     "coverageProvider": "v8",
     "coverageThreshold": {
-      "global": {
-        "branches": 73,
-        "functions": 90,
-        "lines": 80,
-        "statements": 80
-      }
-    }
-  },
-  "dependencies": {
-    "devcert": "^1.2.0"
+        "global": {
+          "branches": 73,
+          "functions": 90,
+          "lines": 80,
+          "statements": 80
+        }
+      } 
   }
 }

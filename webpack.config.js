@@ -20,7 +20,6 @@ const config = {
   devServer: {
     open: true,
     host: "localhost",
-    https: true,
   },
   devtool: isProduction ? false : "inline-source-map",
   plugins: [
@@ -86,7 +85,7 @@ const config = {
   },
 };
 
-module.exports = async () => {
+module.exports = () => {
   if (isProduction) {
     config.mode = "production";
 
@@ -94,11 +93,5 @@ module.exports = async () => {
   } else {
     config.mode = "development";
   }
-  
-  const devcert = require("devcert");
-  const ssl = await devcert.certificateFor("localhost", { getCaPath: true });
-  const { key, cert } = ssl;
-  config.devServer.https = {key, cert};
-
   return config;
 };
